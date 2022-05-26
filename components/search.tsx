@@ -4,7 +4,7 @@ interface SearchProps {
 
 export default function Search({ ...rest }: SearchProps) {
   return (
-    <div className="fixed w-full max-w-xl px-4">
+    <div className="fixed w-full max-w-xl px-4 z-50">
       <div className="flex item-center relative  mt-7 ">
         <div className="pointer-events-none absolute left-0 flex items-center justify-center pl-5 pt-[0.6rem]">
           <svg
