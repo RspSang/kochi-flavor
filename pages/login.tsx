@@ -1,8 +1,9 @@
 import Button from "@components/button";
 import Input from "@components/input";
+import { NextPage } from "next";
 import Link from "next/link";
 
-export default function Enter() {
+const Login: NextPage = () => {
   return (
     <div className="mt-16 px-4 max-w-xl">
       <h3 className="text-center text-3xl font-bold">
@@ -62,4 +63,6 @@ export default function Enter() {
       </div>
     </div>
   );
-}
+};
+
+export default Login;

@@ -156,7 +156,7 @@ export default function Layout({
               <span>まちナビ</span>
             </a>
           </Link>
-          <Link href="/profile">
+          <Link href="/profile/1">
             <a
               className={cls(
                 "flex flex-col items-center space-y-2 ",

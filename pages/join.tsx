@@ -1,8 +1,9 @@
 import Button from "@components/button";
 import Input from "@components/input";
+import { NextPage } from "next";
 import Link from "next/link";
 
-export default function Join() {
+const Join: NextPage = () => {
   return (
     <div className="mt-16 px-6 max-w-xl">
       <h3 className="text-center text-3xl font-bold">会員登録</h3>
@@ -24,4 +25,6 @@ export default function Join() {
       </div>
     </div>
   );
-}
+};
+
+export default Join;
