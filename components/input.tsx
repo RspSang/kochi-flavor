@@ -28,7 +28,7 @@ export default function Input({
         {label}
       </label>
       {kind === "text" ? (
-        <div className="relative flex items-center  rounded-md shadow-sm">
+        <div className="relative flex items-center rounded-md shadow-sm">
           <input
             id={name}
             required={required}

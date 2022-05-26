@@ -21,7 +21,6 @@ export default function Enter() {
           <Input name="password" label="パスワード" type="password" required />
           <Button text="ログイン" />
         </form>
-
         <div className="mt-8">
           <div className="relative">
             <div className="absolute w-full border-t border-gray-300" />
