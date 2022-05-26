@@ -1,6 +1,5 @@
 import Button from "@components/button";
 import Input from "@components/input";
-import { cls } from "@libs/client/utils";
 import Link from "next/link";
 
 export default function Enter() {

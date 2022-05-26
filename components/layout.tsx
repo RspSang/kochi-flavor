@@ -2,18 +2,54 @@ import React from "react";
 import Link from "next/link";
 import { cls } from "@libs/client/utils";
 import { useRouter } from "next/router";
+import Search from "./search";
 
 interface LayoutProps {
+  title?: string;
+  canGoBack?: boolean;
+  searchBar?: boolean;
   hasTabBar?: boolean;
+  children?: React.ReactNode;
 }
 
-export default function Layout({ hasTabBar }: LayoutProps) {
+export default function Layout({
+  title,
+  canGoBack,
+  searchBar,
+  hasTabBar,
+  children,
+}: LayoutProps) {
   const router = useRouter();
   const onClick = () => {
     router.back();
   };
   return (
     <div>
+      {searchBar ? <Search /> : null}
+      {canGoBack ? (
+        <div className="fixed top-0 flex h-12 w-full max-w-xl items-center justify-center  border-b bg-white px-10 text-lg  font-medium text-gray-800">
+          <button onClick={onClick} className="absolute left-4">
+            <svg
+              className="h-6 w-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M15 19l-7-7 7-7"
+              ></path>
+            </svg>
+          </button>
+          {title ? (
+            <span className={cls(canGoBack ? "mx-auto" : "", "")}>{title}</span>
+          ) : null}
+        </div>
+      ) : null}
+      <div className={cls("pt-12", hasTabBar ? "pb-24" : "")}>{children}</div>
       {hasTabBar ? (
         <nav className="fixed bottom-0 flex w-full max-w-xl justify-between border-t bg-white px-10 pb-5 pt-3 text-xs text-gray-700">
           <Link href="/">
@@ -42,11 +78,11 @@ export default function Layout({ hasTabBar }: LayoutProps) {
               <span>グルメ</span>
             </a>
           </Link>
-          <Link href="/community">
+          <Link href="/articles">
             <a
               className={cls(
                 "flex flex-col items-center space-y-2 ",
-                router.pathname === "/community"
+                router.pathname === "/articles"
                   ? "text-orange-500"
                   : "transition-colors hover:text-gray-500"
               )}
@@ -68,11 +104,11 @@ export default function Layout({ hasTabBar }: LayoutProps) {
               <span>リスト</span>
             </a>
           </Link>
-          <Link href="/story">
+          <Link href="/reviews">
             <a
               className={cls(
                 "flex flex-col items-center space-y-2 ",
-                router.pathname === "/story"
+                router.pathname === "/reviews"
                   ? "text-orange-500"
                   : "transition-colors hover:text-gray-500"
               )}

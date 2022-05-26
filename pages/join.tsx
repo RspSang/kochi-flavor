@@ -2,10 +2,6 @@ import Button from "@components/button";
 import Input from "@components/input";
 import Link from "next/link";
 
-function cls(...classnames: string[]) {
-  return classnames.join(" ");
-}
-
 export default function Join() {
   return (
     <div className="mt-16 px-6 max-w-xl">
