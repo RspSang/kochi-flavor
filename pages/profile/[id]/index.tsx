@@ -10,7 +10,7 @@ const Profile: NextPage = () => {
           <div className="w-16 h-16 bg-slate-500 rounded-full" />
           <div className="flex flex-col">
             <span className="font-medium text-gray-900">Steve Jebs</span>
-            <Link href="/profile/edit">
+            <Link href="/profile/1/edit">
               <a className="text-sm text-gray-700">
                 プロフィールを更新する &rarr;
               </a>
