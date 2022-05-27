@@ -6,7 +6,7 @@ import Layout from "@components/layout";
 const Navi: NextPage = () => {
   return (
     <Layout hasTabBar>
-      <div className="space-y-4 divide-y-[2px] max-w-xl">
+      <div className="space-y-4 divide-y-[2px] relative">
         {[1, 2, 3, 4, 5].map((i, _) => (
           <Link key={i} href={`/reviews/${i}`}>
             <a className="flex cursor-pointer flex-col items-start pt-4">
