@@ -27,7 +27,7 @@ export default function Layout({
     <div>
       {searchBar ? <Search /> : null}
       {canGoBack ? (
-        <div className="fixed top-0 flex h-12 w-full max-w-xl items-center justify-center  border-b bg-white px-10 text-lg  font-medium text-gray-800">
+        <div className="fixed top-0 flex h-12 items-center justify-center  border-b bg-white px-10 text-lg  font-medium text-gray-800">
           <button onClick={onClick} className="absolute left-4">
             <svg
               className="h-6 w-6"

@@ -8,7 +8,7 @@ interface ArticleProps {
 
 export default function Article({ title, description }: ArticleProps) {
   return (
-    <div className="mb-5 max-w-xl px-4">
+    <div className="mb-5 px-4">
       <Link href={"/"}>
         <a className="cursor-pointer">
           <div className="bg-slate-500 rounded-3xl py-28">

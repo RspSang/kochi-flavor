@@ -7,7 +7,7 @@ const Reviews: NextPage = () => {
     <Layout hasTabBar searchBar>
       <div className="px-4 max-w-xl mt-10 space-y-1">
         {[1, 2, 3, 4, 5].map(() => (
-          <div className="border-2 px-2">
+          <div className="border-2 px-2 rounded-lg">
             <div className="flex items-center mt-4 space-x-3 ">
               <div className="w-12 h-12 bg-slate-500 rounded-full" />
               <div className="flex flex-col">
