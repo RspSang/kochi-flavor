@@ -7,7 +7,7 @@ interface InputProps {
   type: string;
   register: UseFormRegisterReturn;
   placeholder?: string;
-  required: boolean;
+  required?: boolean;
 }
 
 export default function Input({
@@ -17,7 +17,7 @@ export default function Input({
   register,
   placeholder,
   type,
-  required,
+  required = false,
 }: InputProps) {
   return (
     <div>
