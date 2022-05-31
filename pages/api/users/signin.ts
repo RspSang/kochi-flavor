@@ -13,20 +13,20 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       },
     });
     if (!user) {
-      res.status(400).json({
+      res.status(403).json({
         ok: false,
         error: "メールアドレスやパスワードが正しくありません",
       });
     }
     const check = await bcrypt.compare(password, user?.password!);
     if (!check) {
-      res.status(400).json({
+      res.status(403).json({
         ok: false,
         error: "メールアドレスやパスワードが正しくありません",
       });
     }
-    res.status(200).end();
+    res.status(200).json({ ok: true });
   }
 }
 
-export default withHandler({ method: ["POST"], handler });
+export default withHandler({ method: ["POST"], handler, isPrivate: false });

@@ -4,9 +4,8 @@ import { NextPage } from "next";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
-import { useState } from "react";
 import useMutation from "@libs/client/useMutation";
-import { User } from "@prisma/client";
+import { useEffect } from "react";
 
 interface SignInForm {
   email: string;
@@ -14,7 +13,7 @@ interface SignInForm {
 }
 
 interface SignInResponse {
-  data: User;
+  ok: boolean;
   error: string;
 }
 
@@ -31,6 +30,11 @@ const SignIn: NextPage = () => {
     if (loading) return;
     signIn(data);
   };
+  useEffect(() => {
+    if (data?.ok) {
+      router.push("/");
+    }
+  }, [data, router]);
   return (
     <div className="mt-16 px-4 max-w-xl">
       <h3 className="text-center text-3xl font-bold">
@@ -43,7 +47,7 @@ const SignIn: NextPage = () => {
           </h5>
           <div className="mt-8 grid w-full grid-cols-2 border-b"></div>
         </div>
-        {errors.email || errors.password ? (
+        {errors.email || errors.password || data?.error ? (
           <div className="bg-red-200 rounded-lg px-4 py-4 top-4 relative">
             <span className="block text-sm text-red-500">
               {errors.email?.message}
@@ -51,7 +55,7 @@ const SignIn: NextPage = () => {
             <span className="block text-sm text-red-500">
               {errors.password?.message}
             </span>
-            {/* <span className="block text-sm text-red-500">{error}</span> */}
+            <span className="block text-sm text-red-500">{data?.error}</span>
           </div>
         ) : null}
         <form
@@ -75,7 +79,7 @@ const SignIn: NextPage = () => {
             label="パスワード"
             type="password"
           />
-          <Button text="ログイン" />
+          <Button text={loading ? "読み込み中" : "ログイン"} />
         </form>
         <div className="mt-8">
           <div className="relative">
