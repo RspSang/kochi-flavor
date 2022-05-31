@@ -83,7 +83,9 @@ const SignUp: NextPage = () => {
               required
             />
             {tokenData?.error ? (
-              <span className="text-red-500 text-sm">{tokenData.error}</span>
+              <span className="block text-sm text-red-500">
+                {tokenData.error}
+              </span>
             ) : null}
             <span className="text-slate-500 text-sm">
               *登録したメールアドレスに認証コードを送りました

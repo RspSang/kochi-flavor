@@ -16,11 +16,18 @@ async function handler(
       .status(404)
       .json({ ok: false, error: "認証コードが正しくありません" });
   }
+  const user = await client.user.create({
+    data: {
+      name: foundToken.name,
+      email: foundToken.email,
+      password: foundToken.password,
+    },
+  });
   req.session.user = {
-    id: foundToken.userId,
+    id: user.id,
   };
   await req.session.save();
-  await client.token.deleteMany({ where: { userId: foundToken.userId } });
+  await client.token.deleteMany({ where: { id: foundToken.id } });
   res.json({ ok: true });
 }
 

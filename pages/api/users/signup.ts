@@ -17,7 +17,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     });
 
     if (user) {
-      res.status(400).json({
+      res.status(403).json({
         ok: false,
         error: "メールアドレスは既に使用中です",
       });
@@ -30,18 +30,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       const token = await client.token.create({
         data: {
           payload,
-          user: {
-            connectOrCreate: {
-              where: {
-                email,
-              },
-              create: {
-                name,
-                email,
-                password: hashedPW,
-              },
-            },
-          },
+          name,
+          email,
+          password: hashedPW,
         },
       });
       const sendEmail = await mail.send({
