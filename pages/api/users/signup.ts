@@ -22,6 +22,14 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         error: "メールアドレスは既に使用中です",
       });
     } else {
+      const foundToken = await client.token.findUnique({
+        where: {
+          email,
+        },
+      });
+      if (foundToken) {
+        await client.token.deleteMany({ where: { id: foundToken.id } });
+      }
       const saltRound = 10;
       const salt = await bcrypt.genSalt(saltRound);
       const hashedPW = await bcrypt.hash(password, salt);
