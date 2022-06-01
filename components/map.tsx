@@ -1,26 +1,13 @@
 import { useState } from "react";
-import {
-  GoogleMap,
-  LoadScript,
-  InfoWindow,
-  Marker,
-} from "@react-google-maps/api";
+import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import useCoords from "@libs/client/useCoords";
 import mapStyles from "@libs/client/mapStyles";
+import useSWR from "swr";
+import { Restaurant } from "@prisma/client";
 
 const containerStyle = {
   height: "100vh",
   width: "100%",
-};
-
-const positionAkiba = {
-  lat: 33.55975751489135,
-  lng: 133.531119618254,
-};
-
-const positionIwamotocho = {
-  lat: 33.558899228071894,
-  lng: 133.531645331202,
 };
 
 const divStyle = {
@@ -34,6 +21,11 @@ const defaultMapOptions = {
   styles: mapStyles,
 };
 
+interface RestaurantResponse {
+  ok: boolean;
+  restaurants: Restaurant[];
+}
+
 const Map = () => {
   const { latitude, longitude } = useCoords();
   const [size, setSize] = useState<undefined | google.maps.Size>(undefined);
@@ -43,7 +35,7 @@ const Map = () => {
   const createOffsetSize = () => {
     return setSize(new window.google.maps.Size(0, -45));
   };
-
+  const { data } = useSWR<RestaurantResponse>("/api/restaurant");
   return (
     <div className="absolute w-full h-full top-0 -z-50 max-w-xl">
       <LoadScript
@@ -56,18 +48,16 @@ const Map = () => {
           center={{ lat: latitude, lng: longitude }}
           zoom={17}
         >
-          <Marker position={positionAkiba} />
-          <Marker position={positionIwamotocho} />
-          <InfoWindow position={positionAkiba} options={infoWindowOptions}>
-            <div style={divStyle}>
-              <h1>高知県庁</h1>
-            </div>
-          </InfoWindow>
-          <InfoWindow position={positionIwamotocho} options={infoWindowOptions}>
-            <div style={divStyle}>
-              <h1>高知市役所</h1>
-            </div>
-          </InfoWindow>
+          {data?.ok
+            ? data.restaurants.map((restaurant) => (
+                <Marker
+                  position={{
+                    lat: +restaurant.latitude,
+                    lng: +restaurant.longitude,
+                  }}
+                />
+              ))
+            : null}
         </GoogleMap>
       </LoadScript>
     </div>
