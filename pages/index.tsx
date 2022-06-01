@@ -6,7 +6,7 @@ const Home: NextPage = () => {
   return (
     <>
       <Layout searchBar hasTabBar></Layout>
-      {/* <Map /> */}
+      <Map />
     </>
   );
 };
