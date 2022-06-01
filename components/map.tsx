@@ -1,19 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   GoogleMap,
   LoadScript,
   InfoWindow,
   Marker,
 } from "@react-google-maps/api";
+import useCoords from "@libs/client/useCoords";
 
 const containerStyle = {
   height: "100vh",
   width: "100%",
-};
-
-const center = {
-  lat: 33.56094658564783,
-  lng: 133.53158095819728,
 };
 
 const positionAkiba = {
@@ -31,7 +27,19 @@ const divStyle = {
   fontSize: 7.5,
 };
 
+const defaultMapOptions = {
+  fullscreenControl: false,
+  clickableIcons: false,
+  disableDefaultUI: false,
+  keyboardShortcuts: false,
+  mapTypeControl: false,
+  panControl: false,
+  scaleControl: false,
+  zoomControl: false,
+};
+
 const Map = () => {
+  const { latitude, longitude } = useCoords();
   const [size, setSize] = useState<undefined | google.maps.Size>(undefined);
   const infoWindowOptions = {
     pixelOffset: size,
@@ -45,7 +53,12 @@ const Map = () => {
         googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAP_KEY!}
         onLoad={() => createOffsetSize()}
       >
-        <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={17}>
+        <GoogleMap
+          options={defaultMapOptions}
+          mapContainerStyle={containerStyle}
+          center={{ lat: latitude, lng: longitude }}
+          zoom={17}
+        >
           <Marker position={positionAkiba} />
           <Marker position={positionIwamotocho} />
           <InfoWindow position={positionAkiba} options={infoWindowOptions}>
