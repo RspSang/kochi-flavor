@@ -17,7 +17,7 @@ export default function useCoords() {
   };
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(onSuccess);
-  }, [coords]);
+  }, []);
 
   return coords;
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   GoogleMap,
   LoadScript,
@@ -6,6 +6,7 @@ import {
   Marker,
 } from "@react-google-maps/api";
 import useCoords from "@libs/client/useCoords";
+import mapStyles from "@libs/client/mapStyles";
 
 const containerStyle = {
   height: "100vh",
@@ -28,14 +29,9 @@ const divStyle = {
 };
 
 const defaultMapOptions = {
-  fullscreenControl: false,
   clickableIcons: false,
-  disableDefaultUI: false,
-  keyboardShortcuts: false,
-  mapTypeControl: false,
-  panControl: false,
-  scaleControl: false,
-  zoomControl: false,
+  disableDefaultUI: true,
+  styles: mapStyles,
 };
 
 const Map = () => {
@@ -47,6 +43,7 @@ const Map = () => {
   const createOffsetSize = () => {
     return setSize(new window.google.maps.Size(0, -45));
   };
+
   return (
     <div className="absolute w-full h-full top-0 -z-50 max-w-xl">
       <LoadScript
