@@ -34,7 +34,7 @@ model Token {
 model Restaurant {
   id              Int      @id @default(autoincrement())
   name            String
-  description     String
+  description     String   @db.MediumText
   latitude        String
   longitude       String
   image           String

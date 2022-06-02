@@ -7,7 +7,10 @@ async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseType>
 ) {
-  const restaurants = await client.restaurant.findMany({});
+  const restaurants = await client.restaurant.findMany({
+    skip: 0,
+    take: 10,
+  });
   res.json({
     ok: true,
     restaurants,
