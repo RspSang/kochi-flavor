@@ -1,8 +1,18 @@
 import type { NextPage } from "next";
 import Link from "next/link";
 import Layout from "@components/layout";
+import useMutation from "@libs/client/useMutation";
+import useUser from "@libs/client/useUser";
+import { useRouter } from "next/router";
 
 const Profile: NextPage = () => {
+  const router = useRouter();
+  const { user } = useUser();
+  const [logout] = useMutation("/api/users/logout");
+  const onClick = () => {
+    logout({});
+    router.push("/auth/signin");
+  };
   return (
     <Layout hasTabBar>
       <div className="px-4 max-w-xl">
@@ -79,9 +89,9 @@ const Profile: NextPage = () => {
                   fill="currentColor"
                 >
                   <path
-                    fill-rule="evenodd"
+                    fillRule="evenodd"
                     d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clip-rule="evenodd"
+                    clipRule="evenodd"
                   />
                 </svg>
               </div>
@@ -90,6 +100,14 @@ const Profile: NextPage = () => {
               </span>
             </a>
           </Link>
+        </div>
+        <div className="mt-16 flex">
+          <button
+            onClick={onClick}
+            className="bg-red-300 rounded-2xl mx-2 py-3 text-center w-full "
+          >
+            ログアウト
+          </button>
         </div>
       </div>
     </Layout>

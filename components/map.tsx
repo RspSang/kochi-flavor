@@ -1,5 +1,10 @@
 import { useState } from "react";
-import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
+import {
+  GoogleMap,
+  LoadScript,
+  Marker,
+  OverlayView,
+} from "@react-google-maps/api";
 import useCoords from "@libs/client/useCoords";
 import mapStyles from "@libs/client/mapStyles";
 import useSWR from "swr";
@@ -29,9 +34,6 @@ interface RestaurantResponse {
 const Map = () => {
   const { latitude, longitude } = useCoords();
   const [size, setSize] = useState<undefined | google.maps.Size>(undefined);
-  const infoWindowOptions = {
-    pixelOffset: size,
-  };
   const createOffsetSize = () => {
     return setSize(new window.google.maps.Size(0, -45));
   };
@@ -50,12 +52,25 @@ const Map = () => {
         >
           {data?.ok
             ? data.restaurants.map((restaurant) => (
-                <Marker
-                  position={{
-                    lat: +restaurant.latitude,
-                    lng: +restaurant.longitude,
-                  }}
-                />
+                <>
+                  <Marker
+                    position={{
+                      lat: +restaurant.latitude,
+                      lng: +restaurant.longitude,
+                    }}
+                  />
+                  <OverlayView
+                    position={{
+                      lat: +restaurant.latitude,
+                      lng: +restaurant.longitude,
+                    }}
+                    mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+                  >
+                    <div className="bg-slate-100 px-3 py-2 border-orange-500 border-2 rounded-2xl">
+                      <h1>{restaurant.name}</h1>
+                    </div>
+                  </OverlayView>
+                </>
               ))
             : null}
         </GoogleMap>

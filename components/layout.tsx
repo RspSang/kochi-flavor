@@ -3,6 +3,8 @@ import Link from "next/link";
 import { cls } from "@libs/client/utils";
 import { useRouter } from "next/router";
 import Search from "./search";
+import useSWR from "swr";
+import { ProfileResponse } from "@libs/client/useUser";
 
 interface LayoutProps {
   title?: string;
@@ -20,6 +22,8 @@ export default function Layout({
   children,
 }: LayoutProps) {
   const router = useRouter();
+  const { data, error } = useSWR<ProfileResponse>("/api/users/me");
+
   const onClick = () => {
     router.back();
   };
@@ -156,32 +160,61 @@ export default function Layout({
               <span>まちナビ</span>
             </a>
           </Link>
-          <Link href="/profile/1">
-            <a
-              className={cls(
-                "flex flex-col items-center space-y-2 ",
-                router.pathname === "/profile"
-                  ? "text-orange-500"
-                  : "transition-colors hover:text-gray-500"
-              )}
-            >
-              <svg
-                className="h-6 w-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
+          {data?.ok ? (
+            <Link href={`/profile/${data?.profile.id}`}>
+              <a
+                className={cls(
+                  "flex flex-col items-center space-y-2 ",
+                  router.pathname === "/profile/[id]"
+                    ? "text-orange-500"
+                    : "transition-colors hover:text-gray-500"
+                )}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+                <svg
+                  className="h-6 w-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  ></path>
+                </svg>
+                <span>プロフィール</span>
+              </a>
+            </Link>
+          ) : (
+            <Link href={`/auth/signin`}>
+              <a
+                className={cls(
+                  "flex flex-col items-center space-y-2 ",
+                  router.pathname === "/auth/signin"
+                    ? "text-orange-500"
+                    : "transition-colors hover:text-gray-500"
+                )}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
                   strokeWidth="2"
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                ></path>
-              </svg>
-              <span>プロフィール</span>
-            </a>
-          </Link>
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+                  />
+                </svg>
+                <span>ログイン</span>
+              </a>
+            </Link>
+          )}
         </nav>
       ) : null}
     </div>

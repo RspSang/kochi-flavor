@@ -26,7 +26,7 @@ export default function withHandler({
       return res.status(405).end();
     }
     if (isPrivate && !req.session.user) {
-      return res.status(401).json({ ok: false, error: "ログインしてください" });
+      return res.json({ ok: false, error: "ログインしてください" });
     }
     try {
       await handler(req, res);
