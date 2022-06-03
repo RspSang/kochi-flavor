@@ -4,7 +4,11 @@ module.exports = {
     "./components/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        notoSans: ["Noto Sans JP", "sans-serif"],
+      },
+    },
   },
   darkMode: "media", // class
   plugins: [require("@tailwindcss/forms")],

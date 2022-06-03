@@ -10,7 +10,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           fetch(url).then((response) => response.json()),
       }}
     >
-      <div className="mx-auto w-full max-w-xl">
+      <div className="mx-auto w-full max-w-xl font-notoSans">
         <Component {...pageProps} />
       </div>
     </SWRConfig>
