@@ -16,7 +16,7 @@ const containerStyle = {
   width: "100%",
 };
 
-const defaultMapOptions = {
+export const defaultMapOptions = {
   clickableIcons: false,
   disableDefaultUI: true,
   styles: mapStyles,
@@ -26,7 +26,6 @@ interface RestaurantResponse {
   ok: boolean;
   restaurants: Restaurant[];
 }
-
 
 const Map = () => {
   const { latitude, longitude } = useCoords();
