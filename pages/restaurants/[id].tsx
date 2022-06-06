@@ -31,7 +31,7 @@ const RestaurantDetail: NextPage = () => {
         <div className="px-4 max-w-xl mt-6 space-y-1">
           <div className="pb-4">
             <div className="px-3 py-4 space-x-6">
-              <span className="text-4xl font-semibold">
+              <span className="text-4xl font-medium">
                 {data.restaurant.name}
               </span>
               <span className="text-orange-500 text-3xl">3.8</span>
@@ -106,7 +106,7 @@ const RestaurantDetail: NextPage = () => {
           </div>
           <div className="py-4 border-t-2">
             <div className="space-y-2">
-              <span className="font-semibold text-lg">
+              <span className="font-medium text-lg">
                 {data.restaurant.address}
               </span>
               <div className="bg-slate-500 rounded-2xl w-full h-60">
@@ -135,7 +135,7 @@ const RestaurantDetail: NextPage = () => {
           </div>
           <div className="py-4 border-t-2">
             <div className="space-y-2">
-              <span className="font-semibold text-lg">お店の情報</span>
+              <span className="font-medium text-lg">お店の情報</span>
               <div className="space-y-[1px] text-slate-700">
                 <div className="flex justify-between">
                   <span>営業時間</span>
