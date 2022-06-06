@@ -13,12 +13,15 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         Int         @id @default(autoincrement())
+  name       String
+  email      String      @unique
+  password   String
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  navis      Navi[]
+  answers    Answer[]
+  wonderings Wondering[]
 }
 
 model Token {
@@ -44,4 +47,38 @@ model Restaurant {
   address         String
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+}
+
+model Navi {
+  id         Int         @id @default(autoincrement())
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     Int
+  question   String      @db.MediumText
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  latitude   Float?
+  longitude  Float?
+  answers    Answer[]
+  wonderings Wondering[]
+}
+
+model Answer {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  navi      Navi     @relation(fields: [naviId], references: [id], onDelete: Cascade)
+  naviId    Int
+  answer    String   @db.MediumText
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Wondering {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  navi      Navi     @relation(fields: [naviId], references: [id], onDelete: Cascade)
+  naviId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
