@@ -26,11 +26,50 @@ async function handler(
     });
     res.json({ ok: true, navi });
   }
+  if (req.method === "GET") {
+    const {
+      query: { latitude, longitude },
+    } = req;
+    const parsedLatitude = parseFloat(latitude.toString());
+    const parsedLongitude = parseFloat(longitude.toString());
+    const navis = await client.navi.findMany({
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            avatar: true,
+          },
+        },
+        _count: {
+          select: {
+            wonderings: true,
+            answers: true,
+          },
+        },
+      },
+      where: {
+        latitude: {
+          gte: parsedLatitude - 0.01,
+          lte: parsedLatitude + 0.01,
+        },
+        longitude: {
+          gte: parsedLongitude - 0.01,
+          lte: parsedLongitude + 0.01,
+        },
+      },
+      take: 10,
+    });
+    res.json({
+      ok: true,
+      navis,
+    });
+  }
 }
 
 export default withApiSession(
   withHandler({
-    method: ["POST"],
+    method: ["GET", "POST"],
     handler,
   })
 );
