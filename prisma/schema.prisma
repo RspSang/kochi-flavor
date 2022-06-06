@@ -23,6 +23,7 @@ model User {
   navis      Navi[]
   answers    Answer[]
   wonderings Wondering[]
+  reviews    Review[]
 }
 
 model Token {
@@ -48,6 +49,7 @@ model Restaurant {
   address         String
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  reviews         Review[]
 }
 
 model Navi {
@@ -82,4 +84,15 @@ model Wondering {
   naviId    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Review {
+  id           Int        @id @default(autoincrement())
+  review       String     @db.MediumText
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       Int
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  restaurantId Int
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
 }

@@ -14,6 +14,26 @@ async function handler(
     where: {
       id: +id.toString(),
     },
+    include: {
+      reviews: {
+        select: {
+          id: true,
+          review: true,
+          user: {
+            select: {
+              id: true,
+              name: true,
+              // avatar: true,
+              _count: {
+                select: {
+                  reviews: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   });
   res.json({
     ok: true,
