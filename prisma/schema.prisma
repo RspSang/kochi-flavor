@@ -24,6 +24,8 @@ model User {
   answers    Answer[]
   wonderings Wondering[]
   reviews    Review[]
+  wants      Want[]
+  wents      Went[]
 }
 
 model Token {
@@ -50,6 +52,8 @@ model Restaurant {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   reviews         Review[]
+  wants           Want[]
+  wents           Went[]
 }
 
 model Navi {
@@ -89,6 +93,26 @@ model Wondering {
 model Review {
   id           Int        @id @default(autoincrement())
   review       String     @db.MediumText
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       Int
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  restaurantId Int
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+model Want {
+  id           Int        @id @default(autoincrement())
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       Int
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  restaurantId Int
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+model Went {
+  id           Int        @id @default(autoincrement())
   user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       Int
   restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
