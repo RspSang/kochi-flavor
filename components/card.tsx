@@ -1,11 +1,13 @@
 import Link from "next/link";
 
 interface CardProps {
-  title: string;
-  description: string;
+  name: string;
+  address: string;
+  distance: number;
 }
 
-export default function Card({ title, description }: CardProps) {
+export default function Card({ name, address, distance }: CardProps) {
+  const clenDistance = (+distance.toFixed(2)).toString() + "km";
   return (
     <div className="mb-5 px-4">
       <Link href={"/"}>
@@ -14,9 +16,9 @@ export default function Card({ title, description }: CardProps) {
             <div className="aspect-square bg-slate-500 w-44 rounded-2xl" />
             <div>
               <div className="flex flex-col">
-                <span className="text-slate-500">거리</span>
-                <span className="font-semibold text-2xl">가게이름</span>
-                <span className="font-semibold">주소</span>
+                <span className="text-slate-500">{clenDistance}</span>
+                <span className="font-semibold text-2xl">{name}</span>
+                <span className="font-semibold">{address}</span>
                 <span>장르</span>
                 <span>평점</span>
               </div>

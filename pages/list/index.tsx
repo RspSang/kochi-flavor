@@ -2,19 +2,33 @@ import Layout from "@components/layout";
 import Card from "@components/card";
 import useSWR from "swr";
 import useCoords from "@libs/client/useCoords";
+import { Restaurant } from "@prisma/client";
+
+interface RestaurantWithDistance extends Restaurant {
+  distance: number;
+}
+
+interface ListResponse {
+  ok: boolean;
+  restaurants: RestaurantWithDistance[];
+}
 
 export default function List() {
   const { latitude, longitude } = useCoords();
-  const { data } = useSWR(
+  const { data } = useSWR<ListResponse>(
     latitude && longitude
       ? `/api/list?latitude=${latitude}&longitude=${longitude}`
       : null
   );
-  console.log(data);
   return (
     <Layout searchBar hasTabBar>
-      {[1, 2, 3, 4].map((i, _) => (
-        <Card title={"title"} description={"desc"} key={i} />
+      {data?.restaurants.map((restaurant) => (
+        <Card
+          name={restaurant.name}
+          address={restaurant.address}
+          distance={restaurant.distance}
+          key={restaurant.id}
+        />
       ))}
     </Layout>
   );
