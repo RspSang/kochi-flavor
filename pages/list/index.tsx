@@ -38,5 +38,3 @@ export default function List() {
     </Layout>
   );
 }
-
-// https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&mode=transit&origins=37.541,126.986&destinations=35.1595454,126.8526012&region=KR&key=[api-key]

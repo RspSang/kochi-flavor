@@ -30,6 +30,8 @@ interface RestaurantWithReview extends Restaurant {
 interface RestaurantResponse {
   ok: boolean;
   restaurant: RestaurantWithReview;
+  want: boolean;
+  went: boolean;
 }
 
 interface ReviewForm {
@@ -59,9 +61,39 @@ const RestaurantDetail: NextPage = () => {
   const [writeReview, { data: reviewData, loading }] = useMutation(
     `/api/restaurant/${router.query.id}/review`
   );
+  const [want, { data: wantData, loading: wantLoading }] = useMutation(
+    `/api/restaurant/${router.query.id}/want`
+  );
+  const [went, { data: wentData, loading: wentLoading }] = useMutation(
+    `/api/restaurant/${router.query.id}/went`
+  );
   const [reviewToggle, setReviewToggle] = useState(false);
   const writeReviewClick = () => {
     setReviewToggle((prev) => !prev);
+  };
+  const wantClick = () => {
+    if (wantLoading) return;
+    want({});
+    mutate(
+      {
+        ...data,
+        want: !data?.want,
+        went: data?.went,
+      },
+      false
+    );
+  };
+  const wentClick = () => {
+    if (wentLoading) return;
+    went({});
+    mutate(
+      {
+        ...data,
+        want: data?.want,
+        went: !data?.went,
+      },
+      false
+    );
   };
   const onVaild = (formData: ReviewForm) => {
     if (loading) return;
@@ -78,7 +110,6 @@ const RestaurantDetail: NextPage = () => {
       setFocus("review");
     }
   }, [reviewToggle]);
-
   return (
     <Layout canGoBack>
       {data?.ok && data.restaurant ? (
@@ -105,7 +136,13 @@ const RestaurantDetail: NextPage = () => {
           </div>
           <div className="py-4 border-t-2">
             <div className="flex justify-around">
-              <div className="flex items-center content-center flex-col cursor-pointer hover:text-orange-500">
+              <div
+                onClick={wantClick}
+                className={cls(
+                  "flex items-center content-center flex-col cursor-pointer )",
+                  data.want ? "text-orange-500" : "hover:text-orange-500"
+                )}
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-10 w-10"
@@ -122,7 +159,13 @@ const RestaurantDetail: NextPage = () => {
                 </svg>
                 <span className="text-sm">行きたい</span>
               </div>
-              <div className="flex items-center content-center flex-col cursor-pointer hover:text-orange-500">
+              <div
+                onClick={wentClick}
+                className={cls(
+                  "flex items-center content-center flex-col cursor-pointer )",
+                  data.went ? "text-orange-500" : "hover:text-orange-500"
+                )}
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-10 w-10"

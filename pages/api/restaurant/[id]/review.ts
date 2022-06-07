@@ -7,29 +7,27 @@ async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseType>
 ) {
-  if (req.method === "POST") {
-    const {
-      body: { review },
-      session: { user },
-      query: { id },
-    } = req;
-    const payload = await client.review.create({
-      data: {
-        review,
-        user: {
-          connect: {
-            id: user?.id,
-          },
-        },
-        restaurant: {
-          connect: {
-            id: +id,
-          },
+  const {
+    body: { review },
+    session: { user },
+    query: { id },
+  } = req;
+  const payload = await client.review.create({
+    data: {
+      review,
+      user: {
+        connect: {
+          id: user?.id,
         },
       },
-    });
-    res.json({ ok: true, payload });
-  }
+      restaurant: {
+        connect: {
+          id: +id,
+        },
+      },
+    },
+  });
+  res.json({ ok: true, payload });
 }
 
 export default withApiSession(
