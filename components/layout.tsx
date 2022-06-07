@@ -82,11 +82,11 @@ export default function Layout({
               <span>グルメ</span>
             </a>
           </Link>
-          <Link href="/articles">
+          <Link href="/list">
             <a
               className={cls(
                 "flex flex-col items-center space-y-2 ",
-                router.pathname === "/articles"
+                router.pathname === "/list"
                   ? "text-orange-500"
                   : "transition-colors hover:text-gray-500"
               )}
