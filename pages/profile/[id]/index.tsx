@@ -4,6 +4,7 @@ import Layout from "@components/layout";
 import useMutation from "@libs/client/useMutation";
 import useUser from "@libs/client/useUser";
 import { useRouter } from "next/router";
+import Image from "next/image";
 
 const Profile: NextPage = () => {
   const router = useRouter();
@@ -17,18 +18,27 @@ const Profile: NextPage = () => {
     <Layout hasTabBar>
       <div className="px-4 max-w-xl">
         <div className="flex items-center mt-4 space-x-3 px-6">
-          <div className="w-16 h-16 bg-slate-500 rounded-full" />
+          {user?.avatar ? (
+            <Image
+              height={64}
+              width={64}
+              src={`https://imagedelivery.net/GSDuBVO5Xp3QfdrHmnLc2A/${user?.avatar}/avatar`}
+              className="rounded-full bg-slate-500"
+            />
+          ) : (
+            <div className="h-16 w-16 rounded-full bg-slate-500" />
+          )}
           <div className="flex flex-col">
-            <span className="font-medium text-gray-900">Steve Jebs</span>
+            <span className="font-medium text-gray-900">{user?.name}</span>
             <Link href="/profile/1/edit">
               <a className="text-sm text-gray-700">
-                プロフィールを更新する &rarr;
+                プロフィールを編集する &rarr;
               </a>
             </Link>
           </div>
         </div>
         <div className="mt-4 px-8 border-b-2 pb-4">
-          <span>Hi i'm web developer based in Kochi</span>
+          <span>{user?.userDescription}</span>
         </div>
         <div className="mt-8 flex justify-around">
           <div className="flex justify-center flex-col items-center">
