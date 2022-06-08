@@ -1,39 +1,42 @@
 import type { NextPage } from "next";
 import Layout from "@components/layout";
-import useCoords from "@libs/client/useCoords";
 import useSWR from "swr";
 import Link from "next/link";
-import Card from "@components/card";
-import { RestaurantWithDistance } from "pages/list";
+import { useRouter } from "next/router";
+import { Review, User } from "@prisma/client";
+import ReviewCard from "@components/review-card";
+
+interface UserWithCounter extends User {
+  _count: { reviews: number };
+}
+
+interface ReviewsWithUser extends Review {
+  user: UserWithCounter;
+}
 
 interface WentResponse {
   ok: boolean;
-  restaurants: RestaurantWithDistance[];
+  reviews: ReviewsWithUser[];
 }
 
-const Review: NextPage = () => {
-  const { latitude, longitude } = useCoords();
+const Reviews: NextPage = () => {
+  const router = useRouter();
   const { data } = useSWR<WentResponse>(
-    latitude && longitude
-      ? `/api/users/me/went?latitude=${latitude}&longitude=${longitude}`
-      : null
+    router.query.id ? `/api/users/${router.query.id}/review` : null
   );
   return (
-    <Layout canGoBack title="行ってきた所">
-      {data?.restaurants.map((restaurant) => (
-        <Link href={`restaurants/${restaurant.id}`} key={restaurant.id}>
-          <a>
-            <Card
-              name={restaurant.name}
-              address={restaurant.address}
-              distance={restaurant.distance}
-              key={restaurant.id}
+    <Layout canGoBack title="書いたレビュー">
+      {data?.reviews
+        ? data.reviews.map((review) => (
+            <ReviewCard
+              userName={review.user.name}
+              reviewCount={review.user._count.reviews}
+              review={review.review}
             />
-          </a>
-        </Link>
-      ))}
+          ))
+        : null}
     </Layout>
   );
 };
 
-export default Review;
+export default Reviews;
