@@ -1,30 +1,27 @@
+import type { NextPage } from "next";
 import Layout from "@components/layout";
-import Card from "@components/card";
-import useSWR from "swr";
 import useCoords from "@libs/client/useCoords";
-import { Restaurant } from "@prisma/client";
+import useSWR from "swr";
 import Link from "next/link";
+import Card from "@components/card";
+import { RestaurantWithDistance } from "pages/list";
 
-export interface RestaurantWithDistance extends Restaurant {
-  distance: number;
-}
-
-interface ListResponse {
+interface WentResponse {
   ok: boolean;
   restaurants: RestaurantWithDistance[];
 }
 
-export default function List() {
+const Review: NextPage = () => {
   const { latitude, longitude } = useCoords();
-  const { data } = useSWR<ListResponse>(
+  const { data } = useSWR<WentResponse>(
     latitude && longitude
-      ? `/api/list?latitude=${latitude}&longitude=${longitude}`
+      ? `/api/users/me/went?latitude=${latitude}&longitude=${longitude}`
       : null
   );
   return (
-    <Layout searchBar hasTabBar>
+    <Layout canGoBack title="行ってきた所">
       {data?.restaurants.map((restaurant) => (
-        <Link href={`restaurants/${restaurant.id}`}>
+        <Link href={`restaurants/${restaurant.id}`} key={restaurant.id}>
           <a>
             <Card
               name={restaurant.name}
@@ -37,4 +34,6 @@ export default function List() {
       ))}
     </Layout>
   );
-}
+};
+
+export default Review;
