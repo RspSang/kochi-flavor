@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { Review, User } from "@prisma/client";
 import ReviewCard from "@components/review-card";
+import Loading from "@components/loading";
 
 interface UserWithCounter extends User {
   _count: { reviews: number };
@@ -26,15 +27,17 @@ const Reviews: NextPage = () => {
   );
   return (
     <Layout canGoBack title="書いたレビュー">
-      {data?.reviews
-        ? data.reviews.map((review) => (
-            <ReviewCard
-              userName={review.user.name}
-              reviewCount={review.user._count.reviews}
-              review={review.review}
-            />
-          ))
-        : null}
+      {data ? (
+        data?.reviews?.map((review) => (
+          <ReviewCard
+            userName={review.user.name}
+            reviewCount={review.user._count.reviews}
+            review={review.review}
+          />
+        ))
+      ) : (
+        <Loading />
+      )}
     </Layout>
   );
 };

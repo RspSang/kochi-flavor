@@ -6,6 +6,7 @@ import Link from "next/link";
 import { RestaurantWithDistance } from "pages/list";
 import { useRouter } from "next/router";
 import RestaurantCard from "@components/restaurant-card";
+import Loading from "@components/loading";
 
 interface WentResponse {
   ok: boolean;
@@ -22,18 +23,22 @@ const Went: NextPage = () => {
   );
   return (
     <Layout canGoBack title="行ってきた所">
-      {data?.restaurants?.map((restaurant) => (
-        <Link href={`restaurants/${restaurant.id}`} key={restaurant.id}>
-          <a>
-            <RestaurantCard
-              name={restaurant.name}
-              address={restaurant.address}
-              distance={restaurant.distance}
-              key={restaurant.id}
-            />
-          </a>
-        </Link>
-      ))}
+      {data ? (
+        data?.restaurants?.map((restaurant) => (
+          <Link href={`restaurants/${restaurant.id}`} key={restaurant.id}>
+            <a>
+              <RestaurantCard
+                name={restaurant.name}
+                address={restaurant.address}
+                distance={restaurant.distance}
+                key={restaurant.id}
+              />
+            </a>
+          </Link>
+        ))
+      ) : (
+        <Loading />
+      )}
     </Layout>
   );
 };

@@ -4,6 +4,7 @@ import useCoords from "@libs/client/useCoords";
 import { Restaurant } from "@prisma/client";
 import Link from "next/link";
 import RestaurantCard from "@components/restaurant-card";
+import Loading from "@components/loading";
 
 export interface RestaurantWithDistance extends Restaurant {
   distance: number;
@@ -23,18 +24,22 @@ export default function List() {
   );
   return (
     <Layout searchBar hasTabBar>
-      {data?.restaurants.map((restaurant) => (
-        <Link href={`restaurants/${restaurant.id}`} key={restaurant.id}>
-          <a>
-            <RestaurantCard
-              name={restaurant.name}
-              address={restaurant.address}
-              distance={restaurant.distance}
-              key={restaurant.id}
-            />
-          </a>
-        </Link>
-      ))}
+      {data ? (
+        data?.restaurants?.map((restaurant) => (
+          <Link href={`restaurants/${restaurant.id}`} key={restaurant.id}>
+            <a>
+              <RestaurantCard
+                name={restaurant.name}
+                address={restaurant.address}
+                distance={restaurant.distance}
+                key={restaurant.id}
+              />
+            </a>
+          </Link>
+        ))
+      ) : (
+        <Loading />
+      )}
     </Layout>
   );
 }
