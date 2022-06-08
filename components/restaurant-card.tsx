@@ -1,12 +1,10 @@
-import Link from "next/link";
-
 interface CardProps {
   name: string;
   address: string;
   distance: number;
 }
 
-export default function Card({ name, address, distance }: CardProps) {
+export default function RestaurantCard({ name, address, distance }: CardProps) {
   const clenDistance = (+distance.toFixed(2)).toString() + "km";
   return (
     <div className="mb-5 px-4 group">

@@ -3,9 +3,9 @@ import Layout from "@components/layout";
 import useCoords from "@libs/client/useCoords";
 import useSWR from "swr";
 import Link from "next/link";
-import Card from "@components/card";
 import { RestaurantWithDistance } from "pages/list";
 import { useRouter } from "next/router";
+import RestaurantCard from "@components/restaurant-card";
 
 interface WantResponse {
   ok: boolean;
@@ -25,7 +25,7 @@ const Want: NextPage = () => {
       {data?.restaurants?.map((restaurant) => (
         <Link href={`restaurants/${restaurant.id}`} key={restaurant.id}>
           <a>
-            <Card
+            <RestaurantCard
               name={restaurant.name}
               address={restaurant.address}
               distance={restaurant.distance}
