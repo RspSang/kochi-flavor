@@ -1,18 +1,31 @@
+import Image from "next/image";
+
 interface ReviewCardProps {
   userName: string;
+  userAvatar: string | null;
   reviewCount: number;
   review: string;
 }
 
 export default function ReviewCard({
   userName,
+  userAvatar,
   reviewCount,
   review,
 }: ReviewCardProps) {
   return (
     <div className="border-b-2">
       <div className="flex items-center mt-4 space-x-3 ">
-        <div className="w-12 h-12 bg-slate-500 rounded-full" />
+        {userAvatar ? (
+          <Image
+            height={58}
+            width={58}
+            src={`https://imagedelivery.net/GSDuBVO5Xp3QfdrHmnLc2A/${userAvatar}/avatar`}
+            className="rounded-full bg-slate-500"
+          />
+        ) : (
+          <div className="h-16 w-16 rounded-full bg-slate-500" />
+        )}
         <div className="flex flex-col">
           <span className="font-medium text-gray-900">{userName}</span>
           <div className="text-slate-500 flex items-center">

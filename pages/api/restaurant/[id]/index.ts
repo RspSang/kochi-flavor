@@ -20,11 +20,12 @@ async function handler(
         select: {
           id: true,
           review: true,
+          restaurantId: true,
           user: {
             select: {
               id: true,
               name: true,
-              // avatar: true,
+              avatar: true,
               _count: {
                 select: {
                   reviews: true,

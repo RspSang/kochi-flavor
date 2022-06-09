@@ -266,11 +266,15 @@ const RestaurantDetail: NextPage = () => {
           </div>
           {data?.restaurant?.reviews
             ? data.restaurant.reviews.map((review) => (
-                <Link href={`/reviews/${review.id}`} key={review.id}>
+                <Link
+                  href={`/restaurants/${review.restaurantId}/reviews/${review.id}`}
+                  key={review.id}
+                >
                   <a className="border-t-2">
                     <div>
                       <ReviewCard
                         userName={review.user.name}
+                        userAvatar={review.user.avatar}
                         reviewCount={review.user._count.reviews}
                         review={review.review}
                       />

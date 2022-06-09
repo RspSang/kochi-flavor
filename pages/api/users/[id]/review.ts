@@ -18,7 +18,7 @@ async function handler(
       user: {
         select: {
           name: true,
-          //avater:true
+          avatar: true,
           _count: { select: { reviews: true } },
         },
       },

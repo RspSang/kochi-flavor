@@ -29,11 +29,18 @@ const Reviews: NextPage = () => {
     <Layout canGoBack title="書いたレビュー">
       {data ? (
         data?.reviews?.map((review) => (
-          <ReviewCard
-            userName={review.user.name}
-            reviewCount={review.user._count.reviews}
-            review={review.review}
-          />
+          <Link
+            href={`/restaurants/${review.restaurantId}/reviews/${review.id}`}
+          >
+            <a>
+              <ReviewCard
+                userName={review.user.name}
+                userAvatar={review.user.avatar}
+                reviewCount={review.user._count.reviews}
+                review={review.review}
+              />
+            </a>
+          </Link>
         ))
       ) : (
         <Loading />
