@@ -20,7 +20,7 @@ interface UserWithCount extends User {
   _count: { reviews: number };
 }
 
-interface ReviewWithUser extends Review {
+export interface ReviewWithUser extends Review {
   user: UserWithCount;
 }
 
@@ -60,7 +60,7 @@ const RestaurantDetail: NextPage = () => {
     router.query.id ? `/api/restaurant/${router.query.id}` : null
   );
   const [writeReview, { data: reviewData, loading }] = useMutation(
-    `/api/restaurant/${router.query.id}/review`
+    `/api/restaurant/${router.query.id}/reviews`
   );
   const [want, { data: wantData, loading: wantLoading }] = useMutation(
     `/api/restaurant/${router.query.id}/want`

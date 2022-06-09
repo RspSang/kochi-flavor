@@ -1,10 +1,10 @@
 import Image from "next/image";
 
 interface ReviewCardProps {
-  userName: string;
-  userAvatar: string | null;
-  reviewCount: number;
-  review: string;
+  userName?: string;
+  userAvatar?: string | null;
+  reviewCount?: number;
+  review?: string;
 }
 
 export default function ReviewCard({
@@ -45,8 +45,8 @@ export default function ReviewCard({
         <span>{review}</span>
       </div>
       <div className="flex overflow-x-scroll relative space-x-2">
-        {[1, 2, 3, 4].map(() => (
-          <div>
+        {[1, 2, 3, 4].map((i, _) => (
+          <div key={i}>
             <div className="h-36 w-36 rounded-2xl bg-slate-500" />
           </div>
         ))}
