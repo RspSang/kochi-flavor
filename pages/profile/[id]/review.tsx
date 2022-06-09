@@ -29,9 +29,7 @@ const Reviews: NextPage = () => {
     <Layout canGoBack title="書いたレビュー">
       {data ? (
         data?.reviews?.map((review) => (
-          <Link
-            href={`/restaurants/${review.restaurantId}/reviews/${review.id}`}
-          >
+          <Link href={`/restaurants/${review.restaurantId}`}>
             <a>
               <ReviewCard
                 userName={review.user.name}

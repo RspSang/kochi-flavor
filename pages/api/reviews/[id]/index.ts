@@ -8,12 +8,12 @@ async function handler(
   res: NextApiResponse<ResponseType>
 ) {
   const {
-    query: { id, reviewId },
+    query: { id },
     session: { user },
   } = req;
-  const review = await client.review.findUnique({
+  const review = await client.review.findMany({
     where: {
-      id: +reviewId.toString(),
+      restaurantId: +id.toString(),
     },
     include: {
       user: {
@@ -27,8 +27,20 @@ async function handler(
           },
         },
       },
+      _count: {
+        select: {
+          likes: true,
+          comments: true,
+        },
+      },
+      likes: {
+        select: {
+          userId: true,
+        },
+      },
     },
   });
+
   res.json({
     ok: true,
     review,

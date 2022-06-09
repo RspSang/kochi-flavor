@@ -3,7 +3,7 @@ import Link from "next/link";
 import Layout from "@components/layout";
 import useSWR from "swr";
 import { useRouter } from "next/router";
-import { Restaurant, Review, User } from "@prisma/client";
+import { Like, Restaurant, Review, User } from "@prisma/client";
 import Image from "next/image";
 import { defaultMapOptions } from "@components/map";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
@@ -22,15 +22,21 @@ interface UserWithCount extends User {
 
 export interface ReviewWithUser extends Review {
   user: UserWithCount;
+  _count: {
+    likes: number;
+    comments: number;
+  };
+  likes: Like;
 }
 
-interface RestaurantWithReview extends Restaurant {
-  reviews: ReviewWithUser[];
+interface ReviewResponse {
+  ok: boolean;
+  review: ReviewWithUser[];
 }
 
 interface RestaurantResponse {
   ok: boolean;
-  restaurant: RestaurantWithReview;
+  restaurant: Restaurant;
   want: boolean;
   went: boolean;
 }
@@ -59,7 +65,10 @@ const RestaurantDetail: NextPage = () => {
   const { data, mutate } = useSWR<RestaurantResponse>(
     router.query.id ? `/api/restaurant/${router.query.id}` : null
   );
-  const [writeReview, { data: reviewData, loading }] = useMutation(
+  const { data: reviewData, mutate: reviewMutate } = useSWR<ReviewResponse>(
+    router.query.id ? `/api/reviews/${router.query.id}` : null
+  );
+  const [writeReview, { data: writeReviewData, loading }] = useMutation(
     `/api/restaurant/${router.query.id}/reviews`
   );
   const [want, { data: wantData, loading: wantLoading }] = useMutation(
@@ -101,11 +110,12 @@ const RestaurantDetail: NextPage = () => {
     writeReview(formData);
   };
   useEffect(() => {
-    if (reviewData && reviewData.ok) {
+    if (writeReviewData && writeReviewData.ok) {
       reset();
-      mutate();
+      reviewMutate();
+      setReviewToggle((prev) => !prev);
     }
-  }, [reviewData, reset, mutate]);
+  }, [writeReviewData, reset, reviewMutate]);
   useEffect(() => {
     if (reviewToggle) {
       setFocus("review");
@@ -264,27 +274,25 @@ const RestaurantDetail: NextPage = () => {
               </div>
             </div>
           </div>
-          {data?.restaurant?.reviews
-            ? data.restaurant.reviews.map((review) => (
-                <Link
-                  href={`/restaurants/${review.restaurantId}/reviews/${review.id}`}
-                  key={review.id}
-                >
-                  <a className="border-t-2">
-                    <div>
-                      <ReviewCard
-                        userName={review.user.name}
-                        userAvatar={review.user.avatar}
-                        reviewCount={review.user._count.reviews}
-                        review={review.review}
-                      />
-                    </div>
-                  </a>
-                </Link>
+          {reviewData?.review
+            ? reviewData.review.map((review) => (
+                <div>
+                  <ReviewCard
+                    userName={review.user.name}
+                    userAvatar={review.user.avatar}
+                    reviewCount={review.user._count.reviews}
+                    review={review.review}
+                    reviewId={review.id}
+                    likeCount={review._count.likes}
+                    commentCount={review._count.comments}
+                    userLike={review.likes}
+                    sessionUserId={user?.id}
+                  />
+                </div>
               ))
             : null}
           {reviewToggle ? (
-            <div className="py-4 border-t-2">
+            <div className="py-4">
               <form onSubmit={handleSubmit(onVaild)}>
                 <TextArea
                   register={register("review", {

@@ -21,6 +21,12 @@ async function handler(
           id: true,
           review: true,
           restaurantId: true,
+          _count: {
+            select: {
+              likes: true,
+              comments: true,
+            },
+          },
           user: {
             select: {
               id: true,
