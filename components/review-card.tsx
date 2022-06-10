@@ -1,7 +1,10 @@
 import useMutation from "@libs/client/useMutation";
 import { cls } from "@libs/client/utils";
+import { Comment } from "@prisma/client";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import Input from "./input";
 
 interface ReviewCardProps {
   userName?: string;
@@ -15,6 +18,15 @@ interface ReviewCardProps {
   sessionUserId?: number;
 }
 
+interface CommentForm {
+  comment: string;
+}
+
+interface CommentResponse {
+  ok: boolean;
+  payload: Comment;
+}
+
 export default function ReviewCard({
   userName,
   userAvatar,
@@ -26,9 +38,19 @@ export default function ReviewCard({
   userLike,
   sessionUserId,
 }: ReviewCardProps) {
+  const {
+    register,
+    handleSubmit,
+    setFocus,
+    reset,
+    formState: { errors },
+  } = useForm<CommentForm>();
   const [isLike, setIsLike] = useState(false);
   const [likeCountState, setLikeCountState] = useState(likeCount);
+  const [toggleComment, setToggleComment] = useState(false);
   const [like, { loading }] = useMutation(`/api/reviews/${reviewId}/like`);
+  const [comment, { data: commentData, loading: commentLoading }] =
+    useMutation<CommentResponse>(`/api/reviews/${reviewId}/comment`);
   const onLikeClick = () => {
     setIsLike((prev) => !prev);
     if (isLike) {
@@ -40,10 +62,27 @@ export default function ReviewCard({
       like({});
     }
   };
-
+  const onCommentClick = () => {
+    setToggleComment((prev) => !prev);
+  };
+  const onValid = (formData: CommentForm) => {
+    if (commentLoading) return;
+    comment(formData);
+  };
+  useEffect(() => {
+    if (toggleComment) {
+      setFocus("comment");
+    }
+  }, [toggleComment]);
   useEffect(() => {
     if (userLike?.find((e: any) => e.userId === sessionUserId)) setIsLike(true);
   }, [userLike]);
+  useEffect(() => {
+    if (commentData?.ok) {
+      setToggleComment((prev) => !prev);
+      reset();
+    }
+  }, [commentData]);
   return (
     <div className="border-b-2">
       <div className="flex items-center mt-4 space-x-3 ">
@@ -85,7 +124,7 @@ export default function ReviewCard({
       <div className="mt-3 flex w-full space-x-5 border-t px-4 py-2.5 text-gray-700">
         <span
           onClick={onLikeClick}
-          className="flex items-center space-x-2 text-sm group"
+          className="flex items-center space-x-2 text-sm group hover:cursor-pointer"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -108,9 +147,15 @@ export default function ReviewCard({
           </svg>
           <span>いいね {likeCountState}</span>
         </span>
-        <span className="flex items-center space-x-2 text-sm">
+        <span
+          onClick={onCommentClick}
+          className="flex items-center space-x-2 text-sm group"
+        >
           <svg
-            className="h-6 w-6"
+            className={cls(
+              "h-6 w-6",
+              toggleComment ? "text-orange-500" : "group-hover:text-orange-500"
+            )}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -126,6 +171,51 @@ export default function ReviewCard({
           <span>コメント {commentCount}</span>
         </span>
       </div>
+      {commentData?.ok ? (
+        <div className="flex items-start space-x-3 bg-slate-50 rounded-lg p-2 mb-2">
+          {userAvatar ? (
+            <Image
+              height={40}
+              width={40}
+              src={`https://imagedelivery.net/GSDuBVO5Xp3QfdrHmnLc2A/${userAvatar}/avatar`}
+              className="rounded-full bg-slate-500"
+            />
+          ) : (
+            <div className="h-8 w-8 rounded-full bg-slate-200" />
+          )}
+          <div>
+            <span className="block text-sm font-medium text-gray-700">
+              {userName}
+            </span>
+            <span className="block text-xs text-gray-500 ">
+              {commentData.payload.createdAt.slice(0, 10)}
+            </span>
+            <p className="mt-2 text-gray-700">{commentData.payload.comment}</p>
+          </div>
+        </div>
+      ) : null}
+      {toggleComment ? (
+        <div className="px-2 space-y-1 mb-2">
+          <form onSubmit={handleSubmit(onValid)}>
+            <Input
+              register={register("comment", {
+                required: "コメントを入力してください",
+              })}
+              name={"comment"}
+              type={"text"}
+              placeholder="レビューにコメントを入力する"
+              userAvatar={userAvatar}
+              kind={"comment"}
+              required
+            />
+            {errors ? (
+              <span className="block text-sm text-red-500 mb-2">
+                {errors?.comment?.message}
+              </span>
+            ) : null}
+          </form>
+        </div>
+      ) : null}
     </div>
   );
 }
