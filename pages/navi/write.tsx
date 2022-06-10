@@ -29,7 +29,7 @@ const Write: NextPage = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<WriteForm>();
-  const onVaild = (data: WriteForm) => {
+  const onValid = (data: WriteForm) => {
     if (loading) return;
     write({ ...data, latitude, longitude });
   };
@@ -41,7 +41,7 @@ const Write: NextPage = () => {
 
   return (
     <Layout canGoBack title="質問する">
-      <form className="space-y-4 p-4" onSubmit={handleSubmit(onVaild)}>
+      <form className="space-y-4 p-4" onSubmit={handleSubmit(onValid)}>
         <TextArea
           register={register("question", {
             required: "質問内容を入力してください",

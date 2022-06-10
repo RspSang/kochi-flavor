@@ -27,7 +27,7 @@ const SignIn: NextPage = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<SignInForm>();
-  const onVaild = async (data: SignInForm) => {
+  const onValid = async (data: SignInForm) => {
     if (loading) return;
     signIn(data);
   };
@@ -61,7 +61,7 @@ const SignIn: NextPage = () => {
             </div>
           ) : null}
           <form
-            onSubmit={handleSubmit(onVaild)}
+            onSubmit={handleSubmit(onValid)}
             className="mt-8 flex flex-col space-y-4"
           >
             <Input

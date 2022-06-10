@@ -35,7 +35,7 @@ const EditProfile: NextPage = () => {
   } = useForm();
   const [editProfile, { data, loading }] =
     useMutation<EditProfileResponse>(`/api/users/me`);
-  const onVaild = async ({
+  const onValid = async ({
     avatar,
     name,
     userDescription,
@@ -95,7 +95,7 @@ const EditProfile: NextPage = () => {
   return (
     <Layout canGoBack title="プロフィールの編集">
       <form
-        onSubmit={handleSubmit(onVaild)}
+        onSubmit={handleSubmit(onValid)}
         className="space-y-4 py-10 px-4 max-w-xl"
       >
         <div className="flex items-center space-x-3">

@@ -77,9 +77,9 @@ const RestaurantDetail: NextPage = () => {
   const [went, { data: wentData, loading: wentLoading }] = useMutation(
     `/api/restaurant/${router.query.id}/went`
   );
-  const [reviewToggle, setReviewToggle] = useState(false);
+  const [toggleRevie, setToggleRevie] = useState(false);
   const writeReviewClick = () => {
-    setReviewToggle((prev) => !prev);
+    setToggleRevie((prev) => !prev);
   };
   const wantClick = () => {
     if (wantLoading) return;
@@ -105,7 +105,7 @@ const RestaurantDetail: NextPage = () => {
       false
     );
   };
-  const onVaild = (formData: ReviewForm) => {
+  const onValid = (formData: ReviewForm) => {
     if (loading) return;
     writeReview(formData);
   };
@@ -113,14 +113,14 @@ const RestaurantDetail: NextPage = () => {
     if (writeReviewData && writeReviewData.ok) {
       reset();
       reviewMutate();
-      setReviewToggle((prev) => !prev);
+      setToggleRevie((prev) => !prev);
     }
   }, [writeReviewData, reset, reviewMutate]);
   useEffect(() => {
-    if (reviewToggle) {
+    if (toggleRevie) {
       setFocus("review");
     }
-  }, [reviewToggle]);
+  }, [toggleRevie]);
   return (
     <Layout canGoBack>
       {data?.ok && data.restaurant ? (
@@ -197,7 +197,7 @@ const RestaurantDetail: NextPage = () => {
                 onClick={writeReviewClick}
                 className={cls(
                   "flex items-center content-center flex-col cursor-pointer",
-                  reviewToggle ? "text-orange-500" : "hover:text-orange-500"
+                  toggleRevie ? "text-orange-500" : "hover:text-orange-500"
                 )}
               >
                 <svg
@@ -291,9 +291,9 @@ const RestaurantDetail: NextPage = () => {
                 </div>
               ))
             : null}
-          {reviewToggle ? (
+          {toggleRevie ? (
             <div className="py-4">
-              <form onSubmit={handleSubmit(onVaild)}>
+              <form onSubmit={handleSubmit(onValid)}>
                 <TextArea
                   register={register("review", {
                     required: "レビューを入力してください",
