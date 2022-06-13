@@ -3,7 +3,7 @@ import Layout from "@components/layout";
 import useSWR from "swr";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Review, User } from "@prisma/client";
+import { Restaurant, Review, User } from "@prisma/client";
 import ReviewCard from "@components/review-card";
 import Loading from "@components/loading";
 
@@ -13,6 +13,11 @@ interface UserWithCounter extends User {
 
 interface ReviewsWithUser extends Review {
   user: UserWithCounter;
+  restaurant: Restaurant;
+  _count: {
+    likes: number;
+    comments: number;
+  };
 }
 
 interface WentResponse {
@@ -29,13 +34,20 @@ const Reviews: NextPage = () => {
     <Layout canGoBack title="書いたレビュー">
       {data ? (
         data?.reviews?.map((review) => (
-          <Link href={`/restaurants/${review.restaurantId}`}>
+          <Link
+            href={`/restaurants/${review.restaurantId}/reviews/${review.id}`}
+          >
             <a>
               <ReviewCard
                 userName={review.user.name}
+                userId={review.user.id}
                 userAvatar={review.user.avatar}
                 reviewCount={review.user._count.reviews}
+                likeCount={review._count.likes}
+                commentCount={review._count.comments}
                 review={review.review}
+                reviewId={review.id}
+                restaurandId={review.restaurant.id}
               />
             </a>
           </Link>

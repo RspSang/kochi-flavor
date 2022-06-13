@@ -2,18 +2,21 @@ import useMutation from "@libs/client/useMutation";
 import { cls } from "@libs/client/utils";
 import { Comment } from "@prisma/client";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import Input from "./input";
 
 interface ReviewCardProps {
-  userName?: string;
+  userId: number;
+  userName: string;
   userAvatar?: string | null;
   reviewCount?: number;
-  review?: string;
-  reviewId?: number;
-  likeCount?: number;
-  commentCount?: number;
+  review: string;
+  reviewId: number;
+  restaurandId: number;
+  likeCount: number;
+  commentCount: number;
   userLike?: any;
   sessionUserId?: number;
 }
@@ -28,11 +31,13 @@ interface CommentResponse {
 }
 
 export default function ReviewCard({
+  userId,
   userName,
   userAvatar,
   reviewCount,
   review,
   reviewId,
+  restaurandId,
   likeCount = 0,
   commentCount = 0,
   userLike,
@@ -48,9 +53,13 @@ export default function ReviewCard({
   const [isLike, setIsLike] = useState(false);
   const [likeCountState, setLikeCountState] = useState(likeCount);
   const [toggleComment, setToggleComment] = useState(false);
-  const [like, { loading }] = useMutation(`/api/reviews/${reviewId}/like`);
+  const [like, { loading }] = useMutation(
+    `/api/restaurant/${restaurandId}/reviews/${reviewId}/like`
+  );
   const [comment, { data: commentData, loading: commentLoading }] =
-    useMutation<CommentResponse>(`/api/reviews/${reviewId}/comment`);
+    useMutation<CommentResponse>(
+      `/api/restaurant/${restaurandId}/reviews/${reviewId}/comment`
+    );
   const onLikeClick = () => {
     setIsLike((prev) => !prev);
     if (isLike) {
@@ -86,16 +95,20 @@ export default function ReviewCard({
   return (
     <div className="border-b-2">
       <div className="flex items-center mt-4 space-x-3 ">
-        {userAvatar ? (
-          <Image
-            height={58}
-            width={58}
-            src={`https://imagedelivery.net/GSDuBVO5Xp3QfdrHmnLc2A/${userAvatar}/avatar`}
-            className="rounded-full bg-slate-500"
-          />
-        ) : (
-          <div className="h-16 w-16 rounded-full bg-slate-500" />
-        )}
+        <Link href={`/profile/${userId}`}>
+          <a>
+            {userAvatar ? (
+              <Image
+                height={58}
+                width={58}
+                src={`https://imagedelivery.net/GSDuBVO5Xp3QfdrHmnLc2A/${userAvatar}/avatar`}
+                className="rounded-full bg-slate-500"
+              />
+            ) : (
+              <div className="h-16 w-16 rounded-full bg-slate-500" />
+            )}
+          </a>
+        </Link>
         <div className="flex flex-col">
           <span className="font-medium text-gray-900">{userName}</span>
           <div className="text-slate-500 flex items-center">
@@ -111,9 +124,13 @@ export default function ReviewCard({
           </div>
         </div>
       </div>
-      <div className="mt-2 px-3 pb-4">
-        <span>{review}</span>
-      </div>
+      <Link href={`/restaurants/${restaurandId}/reviews/${reviewId}`}>
+        <a>
+          <div className="mt-2 px-3 pb-4">
+            <span>{review}</span>
+          </div>
+        </a>
+      </Link>
       <div className="flex overflow-x-scroll relative space-x-2">
         {[1, 2, 3, 4].map((i, _) => (
           <div key={i}>
@@ -173,16 +190,20 @@ export default function ReviewCard({
       </div>
       {commentData?.ok ? (
         <div className="flex items-start space-x-3 bg-slate-50 rounded-lg p-2 mb-2">
-          {userAvatar ? (
-            <Image
-              height={40}
-              width={40}
-              src={`https://imagedelivery.net/GSDuBVO5Xp3QfdrHmnLc2A/${userAvatar}/avatar`}
-              className="rounded-full bg-slate-500"
-            />
-          ) : (
-            <div className="h-8 w-8 rounded-full bg-slate-200" />
-          )}
+          <Link href={`/profile/${userId}`}>
+            <a>
+              {userAvatar ? (
+                <Image
+                  height={40}
+                  width={40}
+                  src={`https://imagedelivery.net/GSDuBVO5Xp3QfdrHmnLc2A/${userAvatar}/avatar`}
+                  className="rounded-full bg-slate-500"
+                />
+              ) : (
+                <div className="h-8 w-8 rounded-full bg-slate-200" />
+              )}
+            </a>
+          </Link>
           <div>
             <span className="block text-sm font-medium text-gray-700">
               {userName}

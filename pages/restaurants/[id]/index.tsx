@@ -66,10 +66,10 @@ const RestaurantDetail: NextPage = () => {
     router.query.id ? `/api/restaurant/${router.query.id}` : null
   );
   const { data: reviewData, mutate: reviewMutate } = useSWR<ReviewResponse>(
-    router.query.id ? `/api/reviews/${router.query.id}` : null
+    router.query.id ? `/api/restaurant/${router.query.id}/reviews` : null
   );
   const [writeReview, { data: writeReviewData, loading }] = useMutation(
-    `/api/restaurant/${router.query.id}/reviews`
+    `/api/restaurant/${router.query.id}/reviews/write`
   );
   const [want, { data: wantData, loading: wantLoading }] = useMutation(
     `/api/restaurant/${router.query.id}/want`
@@ -278,11 +278,13 @@ const RestaurantDetail: NextPage = () => {
             ? reviewData.review.map((review) => (
                 <div>
                   <ReviewCard
+                    userId={review.user.id}
                     userName={review.user.name}
                     userAvatar={review.user.avatar}
                     reviewCount={review.user._count.reviews}
                     review={review.review}
                     reviewId={review.id}
+                    restaurandId={review.restaurantId}
                     likeCount={review._count.likes}
                     commentCount={review._count.comments}
                     userLike={review.likes}

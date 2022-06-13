@@ -22,6 +22,17 @@ async function handler(
           _count: { select: { reviews: true } },
         },
       },
+      restaurant: {
+        select: {
+          id: true,
+        },
+      },
+      _count: {
+        select: {
+          likes: true,
+          comments: true,
+        },
+      },
     },
   });
   res.json({ ok: true, reviews });

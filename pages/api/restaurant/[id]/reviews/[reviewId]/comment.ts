@@ -10,7 +10,7 @@ async function handler(
   const {
     body: { comment },
     session: { user },
-    query: { id },
+    query: { reviewId },
   } = req;
   const payload = await client.comment.create({
     data: {
@@ -22,7 +22,7 @@ async function handler(
       },
       review: {
         connect: {
-          id: +id.toString(),
+          id: +reviewId.toString(),
         },
       },
     },

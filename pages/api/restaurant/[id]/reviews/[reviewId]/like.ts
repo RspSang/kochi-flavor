@@ -8,13 +8,13 @@ async function handler(
   res: NextApiResponse<ResponseType>
 ) {
   const {
-    query: { id },
+    query: { reviewId },
     session: { user },
   } = req;
   const alreadyExists = await client.like.findFirst({
     where: {
       userId: user?.id,
-      reviewId: +id.toString(),
+      reviewId: +reviewId.toString(),
     },
     select: {
       id: true,
@@ -36,7 +36,7 @@ async function handler(
         },
         review: {
           connect: {
-            id: +id.toString(),
+            id: +reviewId.toString(),
           },
         },
       },
