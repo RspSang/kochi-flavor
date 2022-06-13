@@ -21,11 +21,11 @@ interface ReviewCardProps {
   sessionUserId?: number;
 }
 
-interface CommentForm {
+export interface CommentForm {
   comment: string;
 }
 
-interface CommentResponse {
+export interface CommentResponse {
   ok: boolean;
   payload: Comment;
 }
@@ -52,6 +52,7 @@ export default function ReviewCard({
   } = useForm<CommentForm>();
   const [isLike, setIsLike] = useState(false);
   const [likeCountState, setLikeCountState] = useState(likeCount);
+  const [commentCountState, setCommentCountState] = useState(commentCount);
   const [toggleComment, setToggleComment] = useState(false);
   const [like, { loading }] = useMutation(
     `/api/restaurant/${restaurandId}/reviews/${reviewId}/like`
@@ -76,6 +77,7 @@ export default function ReviewCard({
   };
   const onValid = (formData: CommentForm) => {
     if (commentLoading) return;
+    setCommentCountState((prev) => prev + 1);
     comment(formData);
   };
   useEffect(() => {
