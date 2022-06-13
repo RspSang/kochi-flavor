@@ -3,41 +3,28 @@ import Layout from "@components/layout";
 import useSWR from "swr";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Restaurant, Review, User } from "@prisma/client";
 import ReviewCard from "@components/review-card";
 import Loading from "@components/loading";
-
-interface UserWithCounter extends User {
-  _count: { reviews: number };
-}
-
-interface ReviewsWithUser extends Review {
-  user: UserWithCounter;
-  restaurant: Restaurant;
-  _count: {
-    likes: number;
-    comments: number;
-  };
-}
-
-interface WentResponse {
-  ok: boolean;
-  reviews: ReviewsWithUser[];
-}
+import useUser from "@libs/client/useUser";
+import { ReviewResponse } from "pages/restaurants/[id]";
 
 const Reviews: NextPage = () => {
   const router = useRouter();
-  const { data } = useSWR<WentResponse>(
+  const { data } = useSWR<ReviewResponse>(
     router.query.id ? `/api/users/${router.query.id}/review` : null
   );
+  const { user } = useUser();
+  console.log(data);
   return (
     <Layout canGoBack title="書いたレビュー">
       {data ? (
         data?.reviews?.map((review) => (
           <Link
+            key={review.id}
             href={`/restaurants/${review.restaurantId}/reviews/${review.id}`}
           >
-            <a>
+            <a className="relative">
+              <div className="absolute top-0 w-full h-full z-20" />
               <ReviewCard
                 userName={review.user.name}
                 userId={review.user.id}
@@ -47,7 +34,9 @@ const Reviews: NextPage = () => {
                 commentCount={review._count.comments}
                 review={review.review}
                 reviewId={review.id}
-                restaurandId={review.restaurant.id}
+                restaurandId={review.restaurantId}
+                userLike={review.likes}
+                sessionUserId={user?.id}
               />
             </a>
           </Link>

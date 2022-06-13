@@ -1,5 +1,4 @@
 import type { NextPage } from "next";
-import Link from "next/link";
 import Layout from "@components/layout";
 import useSWR from "swr";
 import { useRouter } from "next/router";
@@ -29,9 +28,9 @@ export interface ReviewWithUser extends Review {
   likes: Like;
 }
 
-interface ReviewResponse {
+export interface ReviewResponse {
   ok: boolean;
-  review: ReviewWithUser[];
+  reviews: ReviewWithUser[];
 }
 
 interface RestaurantResponse {
@@ -274,8 +273,8 @@ const RestaurantDetail: NextPage = () => {
               </div>
             </div>
           </div>
-          {reviewData?.review
-            ? reviewData.review.map((review) => (
+          {reviewData?.reviews
+            ? reviewData.reviews.map((review) => (
                 <div>
                   <ReviewCard
                     userId={review.user.id}

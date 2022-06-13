@@ -33,6 +33,11 @@ async function handler(
           comments: true,
         },
       },
+      likes: {
+        select: {
+          userId: true,
+        },
+      },
     },
   });
   res.json({ ok: true, reviews });
