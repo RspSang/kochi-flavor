@@ -14,7 +14,6 @@ const Reviews: NextPage = () => {
     router.query.id ? `/api/users/${router.query.id}/review` : null
   );
   const { user } = useUser();
-  console.log(data);
   return (
     <Layout canGoBack title="書いたレビュー">
       {data ? (

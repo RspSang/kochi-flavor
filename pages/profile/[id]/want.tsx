@@ -25,7 +25,7 @@ const Want: NextPage = () => {
     <Layout canGoBack title="行きたい所">
       {data ? (
         data.restaurants?.map((restaurant) => (
-          <Link href={`restaurants/${restaurant.id}`} key={restaurant.id}>
+          <Link href={`/restaurants/${restaurant.id}`} key={restaurant.id}>
             <a>
               <RestaurantCard
                 name={restaurant.name}
