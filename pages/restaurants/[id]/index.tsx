@@ -41,6 +41,7 @@ interface RestaurantResponse {
 }
 
 interface ReviewForm {
+  photo: FileList;
   review: string;
 }
 
@@ -59,6 +60,7 @@ const RestaurantDetail: NextPage = () => {
     handleSubmit,
     reset,
     setFocus,
+    watch,
     formState: { errors },
   } = useForm<ReviewForm>();
   const { data, mutate } = useSWR<RestaurantResponse>(
@@ -104,10 +106,33 @@ const RestaurantDetail: NextPage = () => {
       false
     );
   };
-  const onValid = (formData: ReviewForm) => {
+  const onValid = async ({ photo, review }: ReviewForm) => {
     if (loading) return;
-    writeReview(formData);
+    if (photo && photo.length > 0) {
+      const { uploadURL } = await (await fetch(`/api/files`)).json();
+      const form = new FormData();
+      form.append("file", photo[0], review);
+      const {
+        result: { id },
+      } = await (
+        await fetch(uploadURL, {
+          method: "POST",
+          body: form,
+        })
+      ).json();
+      writeReview({ review, photoId: id });
+    } else {
+      writeReview({ review });
+    }
   };
+  const photo = watch("photo");
+  const [photoPreview, setPhotoPreview] = useState("");
+  useEffect(() => {
+    if (photo && photo.length > 0) {
+      const file = photo[0];
+      setPhotoPreview(URL.createObjectURL(file));
+    }
+  }, [photo]);
   useEffect(() => {
     if (writeReviewData && writeReviewData.ok) {
       reset();
@@ -275,7 +300,7 @@ const RestaurantDetail: NextPage = () => {
           </div>
           {reviewData?.reviews
             ? reviewData.reviews.map((review) => (
-                <div>
+                <div key={review.id}>
                   <ReviewCard
                     userId={review.user.id}
                     userName={review.user.name}
@@ -295,6 +320,40 @@ const RestaurantDetail: NextPage = () => {
           {toggleRevie ? (
             <div className="py-4">
               <form onSubmit={handleSubmit(onValid)}>
+                <div>
+                  {photoPreview ? (
+                    <div className="relative pb-80">
+                      <Image
+                        layout="fill"
+                        src={photoPreview}
+                        className="w-full rounded-lg object-cover text-gray-600"
+                      />
+                    </div>
+                  ) : (
+                    <label className="flex h-24 mb-1 w-full cursor-pointer items-center justify-center rounded-md border-2 border-dashed border-gray-300 text-gray-600 hover:border-orange-500 hover:text-orange-500">
+                      <svg
+                        className="h-12 w-12"
+                        stroke="currentColor"
+                        fill="none"
+                        viewBox="0 0 48 48"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                          strokeWidth={2}
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                      <input
+                        {...register("photo")}
+                        accept="image/*"
+                        className="hidden"
+                        type="file"
+                      />
+                    </label>
+                  )}
+                </div>
                 <TextArea
                   register={register("review", {
                     required: "レビューを入力してください",

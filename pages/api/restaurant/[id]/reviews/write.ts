@@ -8,13 +8,14 @@ async function handler(
   res: NextApiResponse<ResponseType>
 ) {
   const {
-    body: { review },
+    body: { review, photoId },
     session: { user },
     query: { id },
   } = req;
   const payload = await client.review.create({
     data: {
       review,
+      photo: photoId,
       user: {
         connect: {
           id: user?.id,
