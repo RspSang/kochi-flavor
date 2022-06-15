@@ -1,25 +1,26 @@
 import useMutation from "@libs/client/useMutation";
+import useUser from "@libs/client/useUser";
 import { cls } from "@libs/client/utils";
-import { Comment } from "@prisma/client";
+import { Comment, User } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { ReviewWithUser } from "pages/restaurants/[id]";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import Input from "./input";
 
+interface CommentWithUser extends Comment {
+  user: User;
+}
+
+interface ReviewWithUserWithComments extends ReviewWithUser {
+  comments?: CommentWithUser[];
+}
+
 interface ReviewCardProps {
-  userId: number;
-  userName: string;
-  userAvatar?: string | null;
-  reviewCount?: number;
-  photo: string;
-  review: string;
-  reviewId: number;
-  restaurandId: number;
-  likeCount: number;
-  commentCount: number;
-  userLike?: any;
-  sessionUserId?: number;
+  review: ReviewWithUserWithComments;
+  type: "simple" | "detail";
 }
 
 export interface CommentForm {
@@ -31,20 +32,11 @@ export interface CommentResponse {
   payload: Comment;
 }
 
-export default function ReviewCard({
-  userId,
-  userName,
-  userAvatar,
-  photo,
-  reviewCount,
-  review,
-  reviewId,
-  restaurandId,
-  likeCount = 0,
-  commentCount = 0,
-  userLike,
-  sessionUserId,
-}: ReviewCardProps) {
+let comments: Comment[] = [];
+
+export default function ReviewCard({ review, type }: ReviewCardProps) {
+  const router = useRouter();
+  const { user } = useUser();
   const {
     register,
     handleSubmit,
@@ -53,15 +45,17 @@ export default function ReviewCard({
     formState: { errors },
   } = useForm<CommentForm>();
   const [isLike, setIsLike] = useState(false);
-  const [likeCountState, setLikeCountState] = useState(likeCount);
-  const [commentCountState, setCommentCountState] = useState(commentCount);
+  const [likeCountState, setLikeCountState] = useState(review._count.likes);
+  const [commentCountState, setCommentCountState] = useState(
+    review._count.comments
+  );
   const [toggleComment, setToggleComment] = useState(false);
   const [like, { loading }] = useMutation(
-    `/api/restaurant/${restaurandId}/reviews/${reviewId}/like`
+    `/api/restaurant/${router.query.id}/reviews/${review.id}/like`
   );
   const [comment, { data: commentData, loading: commentLoading }] =
     useMutation<CommentResponse>(
-      `/api/restaurant/${restaurandId}/reviews/${reviewId}/comment`
+      `/api/restaurant/${router.query.id}/reviews/${review.id}/comment`
     );
   const onLikeClick = () => {
     setIsLike((prev) => !prev);
@@ -75,7 +69,11 @@ export default function ReviewCard({
     }
   };
   const onCommentClick = () => {
-    setToggleComment((prev) => !prev);
+    if (type === "simple") {
+      setToggleComment((prev) => !prev);
+    } else {
+      setFocus("comment");
+    }
   };
   const onValid = (formData: CommentForm) => {
     if (commentLoading) return;
@@ -88,24 +86,30 @@ export default function ReviewCard({
     }
   }, [toggleComment]);
   useEffect(() => {
-    if (userLike?.find((e: any) => e.userId === sessionUserId)) setIsLike(true);
-  }, [userLike]);
+    if (review.likes.find((e: any) => e.userId === user?.id)) setIsLike(true);
+  }, [review.likes]);
   useEffect(() => {
     if (commentData?.ok) {
-      setToggleComment((prev) => !prev);
+      comments.push(commentData.payload);
+      if (type === "simple") {
+        setToggleComment((prev) => !prev);
+      }
       reset();
     }
   }, [commentData]);
+  useEffect(() => {
+    comments = [];
+  }, [router]);
   return (
     <div className="border-b-2">
       <div className="flex items-center mt-4 space-x-3 ">
-        <Link href={`/profile/${userId}`}>
+        <Link href={`/profile/${review.user.id}`}>
           <a>
-            {userAvatar ? (
+            {review.user.avatar ? (
               <Image
                 height={58}
                 width={58}
-                src={`https://imagedelivery.net/GSDuBVO5Xp3QfdrHmnLc2A/${userAvatar}/avatar`}
+                src={`https://imagedelivery.net/GSDuBVO5Xp3QfdrHmnLc2A/${review.user.avatar}/avatar`}
                 className="rounded-full bg-slate-500"
               />
             ) : (
@@ -114,7 +118,7 @@ export default function ReviewCard({
           </a>
         </Link>
         <div className="flex flex-col">
-          <span className="font-medium text-gray-900">{userName}</span>
+          <span className="font-medium text-gray-900">{review.user.name}</span>
           <div className="text-slate-500 flex items-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -124,23 +128,23 @@ export default function ReviewCard({
             >
               <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
             </svg>
-            <span className="pl-1">{reviewCount}</span>
+            <span className="pl-1">{review.user._count.reviews}</span>
           </div>
         </div>
       </div>
-      <Link href={`/restaurants/${restaurandId}/reviews/${reviewId}`}>
+      <Link href={`/restaurants/${router.query.id}/reviews/${review.id}`}>
         <a>
           <div className="mt-2 px-3 pb-4">
-            <span>{review}</span>
+            <span>{review.review}</span>
           </div>
         </a>
       </Link>
-      {photo ? (
+      {review.photo ? (
         <div className="flex relative space-x-2">
           <Image
             height={160}
             width={160}
-            src={`https://imagedelivery.net/GSDuBVO5Xp3QfdrHmnLc2A/${photo}/avatar`}
+            src={`https://imagedelivery.net/GSDuBVO5Xp3QfdrHmnLc2A/${review.photo}/avatar`}
             className="rounded-lg bg-slate-500"
           />
         </div>
@@ -195,34 +199,86 @@ export default function ReviewCard({
           <span>コメント {commentCountState}</span>
         </span>
       </div>
-      {commentData?.ok ? (
-        <div className="flex items-start space-x-3 bg-slate-50 rounded-lg p-2 mb-2">
-          <Link href={`/profile/${userId}`}>
-            <a>
-              {userAvatar ? (
+      {type === "detail"
+        ? review.comments?.map((comment) => (
+            <div
+              key={comment.id}
+              className="flex items-start space-x-3 px-2 mb-2"
+            >
+              {comment.user.avatar ? (
                 <Image
-                  height={40}
-                  width={40}
-                  src={`https://imagedelivery.net/GSDuBVO5Xp3QfdrHmnLc2A/${userAvatar}/avatar`}
+                  height={36}
+                  width={36}
+                  src={`https://imagedelivery.net/GSDuBVO5Xp3QfdrHmnLc2A/${comment.user.avatar}/avatar`}
                   className="rounded-full bg-slate-500"
                 />
               ) : (
                 <div className="h-8 w-8 rounded-full bg-slate-200" />
               )}
-            </a>
-          </Link>
-          <div>
-            <span className="block text-sm font-medium text-gray-700">
-              {userName}
+              <div>
+                <span className="block text-sm font-medium text-gray-700">
+                  {comment.user.name}
+                </span>
+                <span className="block text-xs text-gray-500 ">
+                  {comment.createdAt.toString().slice(0, 10)}
+                </span>
+                <p className="mt-2 text-gray-700">{comment.comment}</p>
+              </div>
+            </div>
+          ))
+        : null}
+      {commentData?.ok
+        ? comments.map((comment) => (
+            <div
+              key={comment.id}
+              className="flex items-start space-x-3 p-2 mb-2"
+            >
+              <Link href={`/profile/${user?.id}`}>
+                <a>
+                  {user?.avatar ? (
+                    <Image
+                      height={40}
+                      width={40}
+                      src={`https://imagedelivery.net/GSDuBVO5Xp3QfdrHmnLc2A/${user.avatar}/avatar`}
+                      className="rounded-full bg-slate-500"
+                    />
+                  ) : (
+                    <div className="h-8 w-8 rounded-full bg-slate-200" />
+                  )}
+                </a>
+              </Link>
+              <div>
+                <span className="block text-sm font-medium text-gray-700">
+                  {user?.name}
+                </span>
+                <span className="block text-xs text-gray-500 ">
+                  {comment.createdAt.toString().slice(0, 10)}
+                </span>
+                <p className="mt-2 text-gray-700">{comment.comment}</p>
+              </div>
+            </div>
+          ))
+        : null}
+      {type === "detail" ? (
+        <form className="px-4" onSubmit={handleSubmit(onValid)}>
+          <Input
+            register={register("comment", {
+              required: "コメントを入力してください",
+            })}
+            name={"comment"}
+            type={"text"}
+            placeholder="レビューにコメントを入力する"
+            userAvatar={user?.avatar}
+            kind={"comment"}
+            required
+          />
+          {errors ? (
+            <span className="block text-sm text-red-500 mb-2">
+              {errors?.comment?.message}
             </span>
-            <span className="block text-xs text-gray-500 ">
-              {commentData.payload.createdAt.slice(0, 10)}
-            </span>
-            <p className="mt-2 text-gray-700">{commentData.payload.comment}</p>
-          </div>
-        </div>
-      ) : null}
-      {toggleComment ? (
+          ) : null}
+        </form>
+      ) : toggleComment ? (
         <div className="px-2 space-y-1 mb-2">
           <form onSubmit={handleSubmit(onValid)}>
             <Input
@@ -232,7 +288,7 @@ export default function ReviewCard({
               name={"comment"}
               type={"text"}
               placeholder="レビューにコメントを入力する"
-              userAvatar={userAvatar}
+              userAvatar={user?.avatar}
               kind={"comment"}
               required
             />

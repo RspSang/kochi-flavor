@@ -25,10 +25,9 @@ export interface ReviewWithUser extends Review {
     likes: number;
     comments: number;
   };
-  likes: Like;
+  likes: Like[];
 }
-
-export interface ReviewResponse {
+interface ReviewResponse {
   ok: boolean;
   reviews: ReviewWithUser[];
 }
@@ -301,20 +300,7 @@ const RestaurantDetail: NextPage = () => {
           {reviewData?.reviews
             ? reviewData.reviews.map((review) => (
                 <div key={review.id}>
-                  <ReviewCard
-                    userId={review.user.id}
-                    userName={review.user.name}
-                    userAvatar={review.user.avatar}
-                    photo={review.photo}
-                    reviewCount={review.user._count.reviews}
-                    review={review.review}
-                    reviewId={review.id}
-                    restaurandId={review.restaurantId}
-                    likeCount={review._count.likes}
-                    commentCount={review._count.comments}
-                    userLike={review.likes}
-                    sessionUserId={user?.id}
-                  />
+                  <ReviewCard review={review} type={"simple"} />
                 </div>
               ))
             : null}
