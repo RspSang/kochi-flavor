@@ -12,6 +12,7 @@ interface ReviewCardProps {
   userName: string;
   userAvatar?: string | null;
   reviewCount?: number;
+  photo: string;
   review: string;
   reviewId: number;
   restaurandId: number;
@@ -34,6 +35,7 @@ export default function ReviewCard({
   userId,
   userName,
   userAvatar,
+  photo,
   reviewCount,
   review,
   reviewId,
@@ -133,13 +135,16 @@ export default function ReviewCard({
           </div>
         </a>
       </Link>
-      <div className="flex overflow-x-scroll relative space-x-2">
-        {[1, 2, 3, 4].map((i, _) => (
-          <div key={i}>
-            <div className="h-36 w-36 rounded-2xl bg-slate-500" />
-          </div>
-        ))}
-      </div>
+      {photo ? (
+        <div className="flex relative space-x-2">
+          <Image
+            height={160}
+            width={160}
+            src={`https://imagedelivery.net/GSDuBVO5Xp3QfdrHmnLc2A/${photo}/avatar`}
+            className="rounded-lg bg-slate-500"
+          />
+        </div>
+      ) : null}
       <div className="mt-3 flex w-full space-x-5 border-t px-4 py-2.5 text-gray-700">
         <span
           onClick={onLikeClick}

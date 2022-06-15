@@ -305,6 +305,7 @@ const RestaurantDetail: NextPage = () => {
                     userId={review.user.id}
                     userName={review.user.name}
                     userAvatar={review.user.avatar}
+                    photo={review.photo}
                     reviewCount={review.user._count.reviews}
                     review={review.review}
                     reviewId={review.id}

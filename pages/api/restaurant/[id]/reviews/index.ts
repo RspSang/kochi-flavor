@@ -11,7 +11,7 @@ async function handler(
     query: { id },
     session: { user },
   } = req;
-  const review = await client.review.findMany({
+  const reviews = await client.review.findMany({
     where: {
       restaurantId: +id.toString(),
     },
@@ -43,7 +43,7 @@ async function handler(
 
   res.json({
     ok: true,
-    review,
+    reviews,
   });
 }
 
