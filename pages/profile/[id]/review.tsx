@@ -24,19 +24,7 @@ const Reviews: NextPage = () => {
           >
             <a className="relative">
               <div className="absolute top-0 w-full h-full z-20" />
-              <ReviewCard
-                userName={review.user.name}
-                userId={review.user.id}
-                userAvatar={review.user.avatar}
-                reviewCount={review.user._count.reviews}
-                likeCount={review._count.likes}
-                commentCount={review._count.comments}
-                review={review.review}
-                reviewId={review.id}
-                restaurandId={review.restaurantId}
-                userLike={review.likes}
-                sessionUserId={user?.id}
-              />
+              <ReviewCard review={review} type={"simple"} />
             </a>
           </Link>
         ))
