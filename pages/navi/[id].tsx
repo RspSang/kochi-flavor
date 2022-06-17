@@ -11,6 +11,7 @@ import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import Input from "@components/input";
 import useUser from "@libs/client/useUser";
+import Image from "next/image";
 
 interface AnswerWithUser extends Answer {
   user: User;
@@ -104,6 +105,20 @@ const NaviDetail: NextPage = () => {
       }
     }
   }, [deleteNaviData]);
+
+  const [
+    answerDelete,
+    { data: answerDeleteData, loading: answerDeleteLoading },
+  ] = useMutation(`/api/navi/${router.query.id}/answers/delete`);
+  const onAnswerDeleteClicke = (answerId: number, answerUserId: number) => {
+    if (answerDeleteLoading) return;
+    answerDelete({ answerId, answerUserId });
+  };
+  useEffect(() => {
+    if (answerDeleteData?.ok) {
+      mutate();
+    }
+  }, [answerDeleteData]);
   return (
     <Layout canGoBack>
       <div
@@ -121,7 +136,16 @@ const NaviDetail: NextPage = () => {
             <div className="flex cursor-pointer items-center space-x-3">
               <Link href={`/profile/${data?.navi?.user?.id}`}>
                 <a>
-                  <div className="h-10 w-10 rounded-full bg-slate-300" />
+                  {data?.navi.user.avatar ? (
+                    <Image
+                      height={36}
+                      width={36}
+                      src={`https://imagedelivery.net/GSDuBVO5Xp3QfdrHmnLc2A/${data.navi.user.avatar}/avatar`}
+                      className="rounded-full bg-slate-500"
+                    />
+                  ) : (
+                    <div className="h-8 w-8 rounded-full bg-slate-200" />
+                  )}
                 </a>
               </Link>
               <div>
@@ -235,9 +259,22 @@ const NaviDetail: NextPage = () => {
         </div>
         <div className="my-5 space-y-5 px-4">
           {data?.navi?.answers?.map((answer) => (
-            <div key={answer.id} className="flex items-start space-x-3">
-              <div className="h-8 w-8 rounded-full bg-slate-200" />
-              <div>
+            <div key={answer.id} className="flex space-x-3">
+              <Link href={`/profile/${answer.user.id}`}>
+                <a>
+                  {answer.user.avatar ? (
+                    <Image
+                      height={36}
+                      width={36}
+                      src={`https://imagedelivery.net/GSDuBVO5Xp3QfdrHmnLc2A/${answer.user.avatar}/avatar`}
+                      className="rounded-full bg-slate-500"
+                    />
+                  ) : (
+                    <div className="h-8 w-8 rounded-full bg-slate-200" />
+                  )}
+                </a>
+              </Link>
+              <div className="bg-slate-200 rounded-lg px-3 py-1">
                 <span className="block text-sm font-medium text-gray-700">
                   {answer.user.name}
                 </span>
@@ -246,6 +283,29 @@ const NaviDetail: NextPage = () => {
                 </span>
                 <p className="mt-2 text-gray-700">{answer.answer} </p>
               </div>
+              {answer.user.id === user?.id ? (
+                <div
+                  onClick={() =>
+                    onAnswerDeleteClicke(answer.id, answer.user.id)
+                  }
+                  className="text-gray-500 hover:cursor-pointer flex items-center"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                    />
+                  </svg>
+                </div>
+              ) : null}
             </div>
           ))}
         </div>
