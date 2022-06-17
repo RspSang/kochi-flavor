@@ -300,7 +300,11 @@ const RestaurantDetail: NextPage = () => {
           {reviewData && reviewData.reviews
             ? reviewData.reviews.map((review) => (
                 <div key={review.id}>
-                  <ReviewCard review={review} type={"simple"} reviewMutate={reviewMutate}/>
+                  <ReviewCard
+                    review={review}
+                    type={"simple"}
+                    reviewMutate={reviewMutate}
+                  />
                 </div>
               ))
             : null}

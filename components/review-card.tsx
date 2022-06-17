@@ -5,10 +5,11 @@ import { Comment, User } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { ReviewResponse, ReviewWithUser } from "pages/restaurants/[id]";
+import { ReviewWithUser } from "pages/restaurants/[id]";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import Input from "./input";
+import ReviewComment from "./review-comment";
 
 interface CommentWithUser extends Comment {
   user: User;
@@ -37,8 +38,6 @@ interface DeleteResponse {
   ok: boolean;
 }
 
-let comments: Comment[] = [];
-
 export default function ReviewCard({
   review,
   type,
@@ -56,29 +55,32 @@ export default function ReviewCard({
 
   // Like Function
   const [isLike, setIsLike] = useState(false);
-  const [likeCountState, setLikeCountState] = useState(review._count.likes);
-  const [like, { loading }] = useMutation(
+  const [likeCountState, setLikeCountState] = useState(0);
+  const [like, { data: likeData, loading: likeLoading }] = useMutation(
     `/api/restaurant/${router.query.id}/reviews/${review.id}/like`
   );
   const onLikeClick = () => {
-    if (!loading) {
-      setIsLike((prev) => !prev);
-      if (isLike) {
-        setLikeCountState((prev) => prev - 1);
-      } else {
-        setLikeCountState((prev) => prev + 1);
-      }
+    if (!likeLoading) {
       like({});
     }
   };
   useEffect(() => {
     if (review.likes.find((e: any) => e.userId === user?.id)) setIsLike(true);
   }, [review.likes]);
+  useEffect(() => {
+    if (likeData?.ok && reviewMutate) {
+      setIsLike((prev) => !prev);
+      if (isLike) {
+        setLikeCountState((prev) => prev - 1);
+      } else {
+        setLikeCountState((prev) => prev + 1);
+      }
+    }
+  }, [likeData]);
 
   // Comment Function
-  const [commentCountState, setCommentCountState] = useState(
-    review._count.comments
-  );
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [commentCountState, setCommentCountState] = useState(0);
   const [toggleComment, setToggleComment] = useState(false);
   const [comment, { data: commentData, loading: commentLoading }] =
     useMutation<CommentResponse>(
@@ -93,12 +95,12 @@ export default function ReviewCard({
   };
   const onValid = (formData: CommentForm) => {
     if (commentLoading) return;
-    setCommentCountState((prev) => prev + 1);
     comment(formData);
   };
   useEffect(() => {
     if (commentData?.ok) {
-      comments.push(commentData.payload);
+      setCommentCountState((prev) => prev + 1);
+      setComments((prev) => [...prev, commentData.payload]);
       if (type === "simple") {
         setToggleComment((prev) => !prev);
       }
@@ -110,9 +112,32 @@ export default function ReviewCard({
       setFocus("comment");
     }
   }, [toggleComment]);
+
+  // Comment Delete Function
+  const [
+    deleteComment,
+    { data: deleteCommentData, loading: deleteCommentLoading },
+  ] = useMutation<CommentResponse>(
+    `/api/restaurant/${router.query.id}/reviews/${review.id}/comment/delete`
+  );
+  const onCommentDeleteClick = (commentId: number, commentUserId: number) => {
+    if (deleteCommentLoading) return;
+    deleteComment({ id: commentId, userId: commentUserId });
+    if (comments.length > 0) {
+      const deletedIndex = comments.findIndex(
+        (comment) => comment.id === commentId
+      );
+      setComments((prev) => [
+        ...prev.slice(0, deletedIndex),
+        ...prev.slice(deletedIndex + 1, prev.length),
+      ]);
+    }
+  };
   useEffect(() => {
-    comments = [];
-  }, [router]);
+    if (deleteCommentData?.ok && reviewMutate) {
+      setCommentCountState((prev) => prev - 1);
+    }
+  }, [deleteCommentData]);
 
   // Dropdown Function
   const [dropDown, setDropDown] = useState(false);
@@ -135,6 +160,15 @@ export default function ReviewCard({
       }
     }
   }, [deleteReviewData]);
+
+  useEffect(() => {
+    if (review._count.likes) setLikeCountState(review._count.likes);
+    if (review._count.comments) setCommentCountState(review._count.comments);
+  }, [review._count]);
+  useEffect(() => {
+    if (review.comments) setComments([...review.comments]);
+  }, [review.comments]);
+
   return (
     <div
       className="border-b-2"
@@ -156,7 +190,7 @@ export default function ReviewCard({
                   className="rounded-full bg-slate-500"
                 />
               ) : (
-                <div className="h-16 w-16 rounded-full bg-slate-500" />
+                <div className="h-12 w-12 rounded-full bg-slate-500" />
               )}
             </a>
           </Link>
@@ -296,66 +330,15 @@ export default function ReviewCard({
           <span>コメント {commentCountState}</span>
         </span>
       </div>
-      {type === "detail"
-        ? review.comments?.map((comment) => (
-            <div
-              key={comment.id}
-              className="flex items-start space-x-3 px-2 mb-2"
-            >
-              {comment.user.avatar ? (
-                <Image
-                  height={36}
-                  width={36}
-                  src={`https://imagedelivery.net/GSDuBVO5Xp3QfdrHmnLc2A/${comment.user.avatar}/avatar`}
-                  className="rounded-full bg-slate-500"
-                />
-              ) : (
-                <div className="h-8 w-8 rounded-full bg-slate-200" />
-              )}
-              <div>
-                <span className="block text-sm font-medium text-gray-700">
-                  {comment.user.name}
-                </span>
-                <span className="block text-xs text-gray-500 ">
-                  {comment.createdAt.toString().slice(0, 10)}
-                </span>
-                <p className="mt-2 text-gray-700">{comment.comment}</p>
-              </div>
-            </div>
-          ))
-        : null}
-      {commentData?.ok
-        ? comments.map((comment) => (
-            <div
-              key={comment.id}
-              className="flex items-start space-x-3 p-2 mb-2"
-            >
-              <Link href={`/profile/${user?.id}`}>
-                <a>
-                  {user?.avatar ? (
-                    <Image
-                      height={40}
-                      width={40}
-                      src={`https://imagedelivery.net/GSDuBVO5Xp3QfdrHmnLc2A/${user.avatar}/avatar`}
-                      className="rounded-full bg-slate-500"
-                    />
-                  ) : (
-                    <div className="h-8 w-8 rounded-full bg-slate-200" />
-                  )}
-                </a>
-              </Link>
-              <div>
-                <span className="block text-sm font-medium text-gray-700">
-                  {user?.name}
-                </span>
-                <span className="block text-xs text-gray-500 ">
-                  {comment.createdAt.toString().slice(0, 10)}
-                </span>
-                <p className="mt-2 text-gray-700">{comment.comment}</p>
-              </div>
-            </div>
-          ))
-        : null}
+      {comments.map((comment) => (
+        <div key={comment.id} className="space-y-3">
+          <ReviewComment
+            comment={comment}
+            user={user}
+            onCommentDeleteClick={onCommentDeleteClick}
+          />
+        </div>
+      ))}
       {type === "detail" ? (
         <form className="px-2" onSubmit={handleSubmit(onValid)}>
           <Input

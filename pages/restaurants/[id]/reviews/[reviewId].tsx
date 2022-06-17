@@ -3,6 +3,7 @@ import Layout from "@components/layout";
 import useSWR from "swr";
 import { useRouter } from "next/router";
 import ReviewCard from "@components/review-card";
+import { useEffect } from "react";
 
 const ReviewDetail: NextPage = () => {
   const router = useRouter();
@@ -15,7 +16,13 @@ const ReviewDetail: NextPage = () => {
   return (
     <Layout canGoBack>
       <div className="mt-5 space-y-1">
-        {data?.ok ? <ReviewCard review={data.review} type={"detail"} /> : null}
+        {data?.ok ? (
+          <ReviewCard
+            review={data.review}
+            type={"detail"}
+            reviewMutate={mutate}
+          />
+        ) : null}
       </div>
     </Layout>
   );

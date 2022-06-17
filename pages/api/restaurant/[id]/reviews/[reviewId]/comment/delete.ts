@@ -8,14 +8,12 @@ async function handler(
   res: NextApiResponse<ResponseType>
 ) {
   const {
-    body: { reviewUser },
+    body: { id, userId },
     session: { user },
-    query: { reviewId },
   } = req;
-
-  if (reviewUser === user?.id) {
-    const deleteReveiw = await client.review.delete({
-      where: { id: +reviewId },
+  if (userId === user?.id) {
+    const deleteComment = await client.comment.delete({
+      where: { id: +id },
     });
     res.json({ ok: true });
   }

@@ -39,7 +39,9 @@ async function handler(
       },
       comments: {
         select: {
+          id: true,
           comment: true,
+          userId: true,
           createdAt: true,
           user: {
             select: {
