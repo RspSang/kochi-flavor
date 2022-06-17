@@ -8,7 +8,9 @@ import Link from "next/link";
 import useMutation from "@libs/client/useMutation";
 import { cls } from "@libs/client/utils";
 import { useForm } from "react-hook-form";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import Input from "@components/input";
+import useUser from "@libs/client/useUser";
 
 interface AnswerWithUser extends Answer {
   user: User;
@@ -40,11 +42,19 @@ interface AnswerResponse {
 
 const NaviDetail: NextPage = () => {
   const router = useRouter();
-  const { register, handleSubmit, reset } = useForm<AnswerForm>();
+  const { user } = useUser();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<AnswerForm>();
   const { data, mutate } = useSWR<NaviDetailResponse>(
     router.query.id ? `/api/navi/${router.query.id}` : null
   );
-  const [wonder, { loading }] = useMutation(
+  const [deleteNavi, { data: deleteNaviData, loading: deleteNaviLoading }] =
+    useMutation(`/api/navi/${router.query.id}/delete`);
+  const [wonder, { loading: wonderloading }] = useMutation(
     `/api/navi/${router.query.id}/wonder`
   );
   const [sendAnswer, { data: answerData, loading: answerLoading }] =
@@ -67,7 +77,7 @@ const NaviDetail: NextPage = () => {
       },
       false
     );
-    if (!loading) {
+    if (!wonderloading) {
       wonder({});
     }
   };
@@ -81,31 +91,106 @@ const NaviDetail: NextPage = () => {
       mutate();
     }
   }, [answerData, reset, mutate]);
+  const [dropDown, setDropDown] = useState(false);
+  const onDeleteClick = () => {
+    if (deleteNaviLoading) return;
+    deleteNavi({ naviUser: data?.navi.userId });
+  };
+  useEffect(() => {
+    if (deleteNaviData?.ok) {
+      if (router.pathname === "/navi/[id]" && mutate) {
+        mutate();
+        router.push(`/navi/`);
+      }
+    }
+  }, [deleteNaviData]);
   return (
     <Layout canGoBack>
-      <div>
-        <span className="my-3 ml-4 inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">
-          まち質問
-        </span>
-        <div className="mb-3 flex cursor-pointer items-center space-x-3  border-b px-4 pb-3">
-          <div className="h-10 w-10 rounded-full bg-slate-300" />
-          <div>
-            <p className="text-sm font-medium text-gray-700">
-              {data?.navi?.user?.name}
-            </p>
-            <Link href={`/users/profiles/${data?.navi?.user?.id}`}>
-              <a className="text-xs font-medium text-gray-500">
-                プロフィールを見る &rarr;
-              </a>
-            </Link>
+      <div
+        onClick={() => {
+          if (dropDown) {
+            setDropDown((prev) => !prev);
+          }
+        }}
+      >
+        <div className="px-4">
+          <span className="my-3 pl-2 inline-flex items-center rounded-full bg-gray-100 text-xs font-medium text-gray-800">
+            まち質問
+          </span>
+          <div className="flex items-center justify-between">
+            <div className="flex cursor-pointer items-center space-x-3">
+              <Link href={`/profile/${data?.navi?.user?.id}`}>
+                <a>
+                  <div className="h-10 w-10 rounded-full bg-slate-300" />
+                </a>
+              </Link>
+              <div>
+                <p className="text-sm font-medium text-gray-700">
+                  {data?.navi?.user?.name}
+                </p>
+              </div>
+            </div>
+            <div>
+              {user?.id === data?.navi.userId ? (
+                <>
+                  <div className="relative">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-6 w-6  hover:cursor-pointer"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      onClick={() => setDropDown((prev) => !prev)}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
+                      />
+                    </svg>
+                    {dropDown ? (
+                      <>
+                        <div className="z-10 absolute right-0 w-max bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700">
+                          <ul className="py-1 px-2 text-sm text-gray-700 dark:text-gray-200">
+                            <li>
+                              <div
+                                onClick={onDeleteClick}
+                                className="px-2 py-2 text-red-500 rounded-lg font-medium hover:bg-red-50 flex items-center space-x-2 hover:cursor-pointer"
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  className="h-6 w-6"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                  />
+                                </svg>
+                                <span>削除</span>
+                              </div>
+                            </li>
+                          </ul>
+                        </div>
+                      </>
+                    ) : null}
+                  </div>
+                </>
+              ) : null}
+            </div>
+          </div>
+          <div className="text-gray-700 space-x-2 pl-2 my-2">
+            <span className="font-medium text-orange-500">Q.</span>
+            <span>{data?.navi?.question}</span>
           </div>
         </div>
         <div>
-          <div className="mt-2 px-4 text-gray-700">
-            <span className="font-medium text-orange-500">Q.</span>
-            {data?.navi?.question}
-          </div>
-          <div className="mt-3 flex w-full space-x-5 border-t border-b-[2px] px-4 py-2.5  text-gray-700">
+          <div className="mt-3 px-4 flex w-full space-x-5 border-t-2 border-b-[2px] py-2  text-gray-700">
             <button
               onClick={onWonderClick}
               className={cls(
@@ -114,7 +199,7 @@ const NaviDetail: NextPage = () => {
               )}
             >
               <svg
-                className="h-4 w-4"
+                className="h-6 w-6"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -131,7 +216,7 @@ const NaviDetail: NextPage = () => {
             </button>
             <span className="flex items-center space-x-2 text-sm">
               <svg
-                className="h-4 w-4"
+                className="h-6 w-6"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -157,24 +242,33 @@ const NaviDetail: NextPage = () => {
                   {answer.user.name}
                 </span>
                 <span className="block text-xs text-gray-500 ">
-                  {answer.createdAt}
+                  {answer.createdAt?.toString().slice(0, 7)}
                 </span>
                 <p className="mt-2 text-gray-700">{answer.answer} </p>
               </div>
             </div>
           ))}
         </div>
-        <form onSubmit={handleSubmit(onValid)} className="px-4">
-          <TextArea
-            name="description"
-            placeholder="回答して力になろう！"
-            required
-            register={register("answer", { required: true, minLength: 5 })}
-          />
-          <button className="mt-2 w-full rounded-md border border-transparent bg-orange-500 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 ">
-            {answerLoading ? "ローディング中" : "回答"}
-          </button>
-        </form>
+        <div className="px-2 space-y-1 mb-2">
+          <form onSubmit={handleSubmit(onValid)}>
+            <Input
+              register={register("answer", {
+                required: "コメントを入力してください",
+              })}
+              name={"answer"}
+              type={"text"}
+              placeholder="レビューにコメントを入力する"
+              userAvatar={user?.avatar}
+              kind={"comment"}
+              required
+            />
+            {errors ? (
+              <span className="block text-sm text-red-500 mb-2">
+                {errors?.answer?.message}
+              </span>
+            ) : null}
+          </form>
+        </div>
       </div>
     </Layout>
   );

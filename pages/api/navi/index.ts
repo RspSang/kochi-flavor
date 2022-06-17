@@ -9,14 +9,12 @@ async function handler(
 ) {
   if (req.method === "POST") {
     const {
-      body: { question, latitude, longitude },
+      body: { question },
       session: { user },
     } = req;
     const navi = await client.navi.create({
       data: {
         question,
-        latitude,
-        longitude,
         user: {
           connect: {
             id: user?.id,
@@ -27,11 +25,6 @@ async function handler(
     res.json({ ok: true, navi });
   }
   if (req.method === "GET") {
-    const {
-      query: { latitude, longitude },
-    } = req;
-    const parsedLatitude = parseFloat(latitude.toString());
-    const parsedLongitude = parseFloat(longitude.toString());
     const navis = await client.navi.findMany({
       include: {
         user: {
@@ -46,16 +39,6 @@ async function handler(
             wonderings: true,
             answers: true,
           },
-        },
-      },
-      where: {
-        latitude: {
-          gte: parsedLatitude - 0.01,
-          lte: parsedLatitude + 0.01,
-        },
-        longitude: {
-          gte: parsedLongitude - 0.01,
-          lte: parsedLongitude + 0.01,
         },
       },
       take: 10,

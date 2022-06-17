@@ -236,7 +236,7 @@ export default function ReviewCard({
                       <li>
                         <div
                           onClick={onDeleteClick}
-                          className="px-2 py-2 text-red-500 rounded-lg font-medium hover:bg-red-50 flex items-center space-x-2"
+                          className="px-2 py-2 text-red-500 rounded-lg font-medium hover:bg-red-50 flex items-center space-x-2 hover:cursor-pointer"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"

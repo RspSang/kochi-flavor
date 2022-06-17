@@ -4,11 +4,12 @@ import FloatingButton from "@components/floating-button";
 import Layout from "@components/layout";
 import useCoords from "@libs/client/useCoords";
 import useSWR from "swr";
-import { Navi, User } from "@prisma/client";
+import { Navi, User, Wondering } from "@prisma/client";
 import Loading from "@components/loading";
 
 interface NaviWithUser extends Navi {
   user: User;
+  wonderings: Wondering[];
   _count: {
     wonderings: number;
     answers: number;
@@ -21,15 +22,10 @@ interface NaviResponse {
 }
 
 const NaviIndex: NextPage = () => {
-  const { latitude, longitude } = useCoords();
-  const { data } = useSWR<NaviResponse>(
-    latitude && longitude
-      ? `/api/navi?latitude=${latitude}&longitude=${longitude}`
-      : null
-  );
+  const { data } = useSWR<NaviResponse>(`/api/navi`);
   return (
     <Layout hasTabBar>
-      <div className="space-y-4 divide-y-[2px] relative">
+      <div className="divide-y-[2px] relative">
         {data ? (
           data?.navis?.map((navi) => (
             <Link key={navi.id} href={`/navi/${navi.id}`}>
@@ -43,12 +39,12 @@ const NaviIndex: NextPage = () => {
                 </div>
                 <div className="mt-5 flex w-full items-center justify-between px-4 text-xs font-medium text-gray-500">
                   <span>{navi.user.name}</span>
-                  <span>{navi.createdAt.slice(0, 10)}</span>
+                  <span>{navi.createdAt.toString().slice(0, 10)}</span>
                 </div>
                 <div className="mt-3 flex w-full space-x-5 border-t px-4 py-2.5 text-gray-700">
                   <span className="flex items-center space-x-2 text-sm">
                     <svg
-                      className="h-4 w-4"
+                      className="h-6 w-6"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -65,7 +61,7 @@ const NaviIndex: NextPage = () => {
                   </span>
                   <span className="flex items-center space-x-2 text-sm">
                     <svg
-                      className="h-4 w-4"
+                      className="h-6 w-6"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
