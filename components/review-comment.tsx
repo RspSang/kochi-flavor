@@ -25,7 +25,7 @@ export default function ReviewComment({
   }, []);
   return (
     <>
-      <div className="flex justify-between">
+      <div>
         <div className="flex space-x-3">
           <Link href={`/profile/${user?.id}`}>
             <a>
@@ -70,7 +70,6 @@ export default function ReviewComment({
           ) : null}
         </div>
       </div>
-      <div className="px-3"></div>
     </>
   );
 }

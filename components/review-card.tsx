@@ -331,7 +331,7 @@ export default function ReviewCard({
         </span>
       </div>
       {comments.map((comment) => (
-        <div key={comment.id} className="space-y-3">
+        <div key={comment.id} className="mb-2">
           <ReviewComment
             comment={comment}
             user={user}

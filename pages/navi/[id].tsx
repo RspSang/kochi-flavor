@@ -136,7 +136,7 @@ const NaviDetail: NextPage = () => {
             <div className="flex cursor-pointer items-center space-x-3">
               <Link href={`/profile/${data?.navi?.user?.id}`}>
                 <a>
-                  {data?.navi.user.avatar ? (
+                  {data?.navi?.user.avatar ? (
                     <Image
                       height={36}
                       width={36}
