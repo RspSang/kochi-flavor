@@ -15,18 +15,18 @@ const InfoMarker = ({
   data: { id, latitude, longitude, name },
 }: InfoMarkerProps) => {
   return (
-    <div key={id}>
+    <div>
       <Marker
         position={{
-          lat: +latitude,
-          lng: +longitude,
+          lat: +latitude!,
+          lng: +longitude!,
         }}
       />
       <OverlayView
         position={
           {
-            lat: +latitude,
-            lng: +longitude,
+            lat: +latitude!,
+            lng: +longitude!,
           } as any
         }
         mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}

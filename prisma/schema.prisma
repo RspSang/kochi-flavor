@@ -45,8 +45,8 @@ model Restaurant {
   id              Int      @id @default(autoincrement())
   name            String
   description     String   @db.MediumText
-  latitude        String
-  longitude       String
+  latitude        Float?
+  longitude       Float?
   image           String
   location_string String
   website         String
