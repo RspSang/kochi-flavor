@@ -86,6 +86,9 @@ const Profile: NextPage = () => {
               </div>
             </div>
             <div className="mt-10 flex flex-col px-8 space-y-3">
+              <div>
+                <span className="text-sm text-gray-500">グルメ</span>
+              </div>
               <Link href={`/profile/${data.profile.id}/review`}>
                 <a>
                   <div className="bg-orange-100 rounded-xl px-6 py-3 flex items-center justify-between shadow-md">
@@ -180,6 +183,51 @@ const Profile: NextPage = () => {
                       </div>
                       <span className="text-sm font-medium text-gray-700">
                         行ってきた所
+                      </span>
+                    </div>
+                    <div className="">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </a>
+              </Link>
+              <div className="pt-4">
+                <span className="text-sm text-gray-500">まちナビ</span>
+              </div>
+              <Link href={`/profile/${data.profile.id}/wonder`}>
+                <a>
+                  <div className="bg-amber-100 rounded-xl px-6 py-3 flex items-center justify-between shadow-md">
+                    <div className="flex items-center space-x-4">
+                      <div className="w-12 h-12 text-white bg-orange-400 rounded-full flex items-center justify-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M2 5a2 2 0 012-2h8a2 2 0 012 2v10a2 2 0 002 2H4a2 2 0 01-2-2V5zm3 1h6v4H5V6zm6 6H5v2h6v-2z"
+                            clipRule="evenodd"
+                          />
+                          <path d="M15 7h1a2 2 0 012 2v5.5a1.5 1.5 0 01-3 0V7z" />
+                        </svg>
+                      </div>
+                      <span className="text-sm font-medium text-gray-700">
+                        気になる
                       </span>
                     </div>
                     <div className="">

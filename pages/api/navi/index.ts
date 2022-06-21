@@ -25,6 +25,9 @@ async function handler(
     res.json({ ok: true, navi });
   }
   if (req.method === "GET") {
+    const {
+      session: { user },
+    } = req;
     const navis = await client.navi.findMany({
       include: {
         user: {
@@ -38,6 +41,14 @@ async function handler(
           select: {
             wonderings: true,
             answers: true,
+          },
+        },
+        wonderings: {
+          select: {
+            userId: true,
+          },
+          where: {
+            userId: user?.id,
           },
         },
       },
