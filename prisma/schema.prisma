@@ -42,21 +42,27 @@ model Token {
 }
 
 model Restaurant {
-  id              Int      @id @default(autoincrement())
-  name            String
-  description     String   @db.MediumText
-  latitude        Float?
-  longitude       Float?
-  image           String
-  location_string String
-  website         String
-  phone           String
-  address         String
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  reviews         Review[]
-  wants           Want[]
-  wents           Went[]
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String   @db.MediumText
+  latitude    Float?
+  longitude   Float?
+  image       String
+  state       String
+  city        String
+  street1     String
+  street2     String
+  postalcode  String
+  cuisine     String
+  open_time   String
+  close_time  String
+  website     String
+  phone       String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  reviews     Review[]
+  wants       Want[]
+  wents       Went[]
 }
 
 model Navi {
