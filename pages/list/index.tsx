@@ -24,22 +24,19 @@ export default function List() {
   );
   return (
     <Layout searchBar hasTabBar>
-      {data ? (
-        data?.restaurants?.map((restaurant) => (
-          <Link href={`restaurants/${restaurant.id}`} key={restaurant.id}>
-            <a>
-              <RestaurantCard
-                name={restaurant.name}
-                address={restaurant.address}
-                distance={restaurant.distance}
-                key={restaurant.id}
-              />
-            </a>
-          </Link>
-        ))
-      ) : (
-        <Loading />
-      )}
+      <div className="mt-8">
+        {data ? (
+          data?.restaurants?.map((restaurant) => (
+            <Link href={`restaurants/${restaurant.id}`} key={restaurant.id}>
+              <a>
+                <RestaurantCard restaurant={restaurant} key={restaurant.id} />
+              </a>
+            </Link>
+          ))
+        ) : (
+          <Loading />
+        )}
+      </div>
     </Layout>
   );
 }

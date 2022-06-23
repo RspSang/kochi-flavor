@@ -1,24 +1,47 @@
-interface CardProps {
-  name: string;
-  address: string;
-  distance: number;
+import { cls } from "@libs/client/utils";
+import Image from "next/image";
+import { RestaurantWithDistance } from "pages/list";
+
+interface RestaurantCardProps {
+  restaurant: RestaurantWithDistance;
 }
 
-export default function RestaurantCard({ name, address, distance }: CardProps) {
-  const clenDistance = (+distance.toFixed(2)).toString() + "km";
+export default function RestaurantCard({ restaurant }: RestaurantCardProps) {
+  const clenDistance = (+restaurant.distance.toFixed(2)).toString() + "km";
+  const cleanCuisine = restaurant.cuisine.split(",");
   return (
-    <div className="mb-5 px-4 group">
-      <div className="h-52 border-2 border-orange-500 rounded-2xl flex items-center space-x-8 px-5">
-        <div className="aspect-square bg-slate-500 w-44 rounded-2xl" />
-        <div>
+    <div className="px-4 mb-3">
+      <div className="flex border-2 shadow-lg rounded-lg h-26 group">
+        {restaurant.image ? (
+          <div className="relative p-20  object-fill">
+            <Image
+              className="rounded-l-lg"
+              layout="fill"
+              src={restaurant.image}
+            />
+          </div>
+        ) : null}
+        <div className={cls("py-4 px-4", restaurant.image ? "" : "")}>
           <div className="flex flex-col">
             <span className="text-slate-500">{clenDistance}</span>
             <span className="font-semibold text-2xl group-hover:text-orange-500">
-              {name}
+              {restaurant.name}
             </span>
-            <span className="font-semibold">{address}</span>
-            <span>장르</span>
-            <span>평점</span>
+            <span>
+              {restaurant.state + restaurant.city + restaurant.street1}
+            </span>
+            {restaurant.cuisine ? (
+              <div className="flex items-center space-x-3">
+                <span>種類</span>
+                <div className="flex space-x-2">
+                  {cleanCuisine.map((cuisine, i) => (
+                    <div className="rounded-full bg-slate-200 px-2" key={i}>
+                      <span>{cuisine}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : null}
           </div>
         </div>
       </div>
