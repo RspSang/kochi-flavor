@@ -14,6 +14,7 @@ import useMutation from "@libs/client/useMutation";
 import useUser from "@libs/client/useUser";
 import { cls } from "@libs/client/utils";
 import ReviewCard from "@components/review-card";
+import Link from "next/link";
 
 interface UserWithCount extends User {
   _count: { reviews: number };
@@ -51,6 +52,23 @@ const containerStyle = {
   borderRadius: "1rem",
 };
 
+const toHHMM = (time: string) => {
+  let myNum = parseInt(time, 10) * 60;
+  let hours = Math.floor(myNum / 3600) as string | number;
+  let minutes = Math.floor((myNum - (hours as number) * 3600) / 60) as
+    | string
+    | number;
+
+  if (hours < 10) {
+    hours = ("0" + hours) as string;
+  }
+  if (minutes < 10) {
+    minutes = "0" + minutes;
+  }
+
+  return hours + ":" + minutes;
+};
+
 const RestaurantDetail: NextPage = () => {
   const router = useRouter();
   const { user } = useUser();
@@ -77,9 +95,12 @@ const RestaurantDetail: NextPage = () => {
   const [went, { data: wentData, loading: wentLoading }] = useMutation(
     `/api/restaurant/${router.query.id}/went`
   );
-  const [toggleRevie, setToggleRevie] = useState(false);
+  const [toggleReview, setToggleReview] = useState(false);
+  const [position, setPosition] = useState({});
+  const [address, setAddress] = useState("");
+  const [time, setTime] = useState("");
   const writeReviewClick = () => {
-    setToggleRevie((prev) => !prev);
+    setToggleReview((prev) => !prev);
   };
   const wantClick = () => {
     if (wantLoading) return;
@@ -136,14 +157,39 @@ const RestaurantDetail: NextPage = () => {
     if (writeReviewData && writeReviewData.ok) {
       reset();
       reviewMutate();
-      setToggleRevie((prev) => !prev);
+      setToggleReview((prev) => !prev);
     }
   }, [writeReviewData, reset, reviewMutate]);
   useEffect(() => {
-    if (toggleRevie) {
+    if (toggleReview) {
       setFocus("review");
     }
-  }, [toggleRevie]);
+  }, [toggleReview]);
+  useEffect(() => {
+    if (data?.ok) {
+      setAddress(
+        (data.restaurant.postalcode === "null"
+          ? ""
+          : data.restaurant.postalcode) +
+          data.restaurant.state +
+          data.restaurant.city +
+          data.restaurant.street1
+      );
+      setPosition({
+        lat: data.restaurant.latitude,
+        lng: data.restaurant.longitude,
+      });
+      if (data.restaurant.open_time) {
+        setTime(
+          toHHMM(data.restaurant.open_time) +
+            " ~ " +
+            toHHMM(data.restaurant.close_time)
+        );
+      } else {
+        setTime("?");
+      }
+    }
+  }, [data]);
   return (
     <Layout canGoBack>
       {data?.ok && data.restaurant ? (
@@ -156,7 +202,7 @@ const RestaurantDetail: NextPage = () => {
               <span className="text-orange-500 text-3xl">3.8</span>
             </div>
             <div className="flex overflow-x-scroll relative space-x-2">
-              {[1, 2, 3, 4].map(() => (
+              {data.restaurant.image ? (
                 <div>
                   <Image
                     className="rounded-2xl"
@@ -165,7 +211,7 @@ const RestaurantDetail: NextPage = () => {
                     src={data.restaurant.image}
                   />
                 </div>
-              ))}
+              ) : null}
             </div>
           </div>
           <div className="py-4 border-t-2">
@@ -220,7 +266,7 @@ const RestaurantDetail: NextPage = () => {
                 onClick={writeReviewClick}
                 className={cls(
                   "flex items-center content-center flex-col cursor-pointer",
-                  toggleRevie ? "text-orange-500" : "hover:text-orange-500"
+                  toggleReview ? "text-orange-500" : "hover:text-orange-500"
                 )}
               >
                 <svg
@@ -243,9 +289,15 @@ const RestaurantDetail: NextPage = () => {
           </div>
           <div className="py-4 border-t-2">
             <div className="space-y-2">
-              <span className="font-medium text-lg">
-                {data.restaurant.address}
-              </span>
+              <div>
+                <Link href={`https://google.com/maps/search/${address}`}>
+                  <a className="hover:text-orange-500 hover:cursor-pointer">
+                    <span className="font-medium text-lg">{address}</span>
+                    <br />
+                    <span>{data.restaurant.street2}</span>
+                  </a>
+                </Link>
+              </div>
               <div className="bg-slate-500 rounded-2xl w-full h-60">
                 <LoadScript
                   googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAP_KEY!}
@@ -253,18 +305,10 @@ const RestaurantDetail: NextPage = () => {
                   <GoogleMap
                     options={defaultMapOptions}
                     mapContainerStyle={containerStyle}
-                    center={{
-                      lat: +data.restaurant.latitude,
-                      lng: +data.restaurant.longitude,
-                    }}
+                    center={position as google.maps.LatLng}
                     zoom={17}
                   >
-                    <Marker
-                      position={{
-                        lat: +data.restaurant.latitude,
-                        lng: +data.restaurant.longitude,
-                      }}
-                    />
+                    <Marker position={position as google.maps.LatLng} />
                   </GoogleMap>
                 </LoadScript>
               </div>
@@ -276,24 +320,20 @@ const RestaurantDetail: NextPage = () => {
               <div className="space-y-[1px] text-slate-700">
                 <div className="flex justify-between">
                   <span>営業時間</span>
-                  <span>10:00 ~ 22:00</span>
+                  <span>{time}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span>休日</span>
-                  <span>なし</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>値段</span>
-                  <span>500円 ~ 2000円/一人</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>種類</span>
-                  <span>和食</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>駐車場</span>
-                  <span>有り</span>
-                </div>
+                {data.restaurant.cuisine ? (
+                  <div className="flex justify-between">
+                    <span>種類</span>
+                    <span>{data.restaurant.cuisine}</span>
+                  </div>
+                ) : null}
+                {data.restaurant.description ? (
+                  <div className="flex justify-between">
+                    <span>その他</span>
+                    <span>{data.restaurant.description}</span>
+                  </div>
+                ) : null}
               </div>
             </div>
           </div>
@@ -308,7 +348,7 @@ const RestaurantDetail: NextPage = () => {
                 </div>
               ))
             : null}
-          {toggleRevie ? (
+          {toggleReview ? (
             <div className="py-4">
               <form onSubmit={handleSubmit(onValid)}>
                 <div>
