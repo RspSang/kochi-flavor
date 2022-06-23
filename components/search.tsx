@@ -13,8 +13,10 @@ export default function Search({ setSearchText }: SearchProps) {
   };
 
   useEffect(() => {
-    if (search.length === 0) {
-      setSearchText("");
+    if (search) {
+      if (search.length === 0) {
+        setSearchText("");
+      }
     }
   }, [search]);
   return (

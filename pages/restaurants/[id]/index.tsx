@@ -203,7 +203,12 @@ const RestaurantDetail: NextPage = () => {
               </span>
               <span className="text-orange-500 text-3xl">3.8</span>
             </div>
-            <div className="flex overflow-x-scroll relative space-x-2">
+            <div
+              className={cls(
+                "flex relative space-x-2",
+                data.restaurant.image ? "overflow-x-scroll" : ""
+              )}
+            >
               {data.restaurant.image ? (
                 <div>
                   <Image
