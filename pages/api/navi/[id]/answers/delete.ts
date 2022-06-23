@@ -11,7 +11,6 @@ async function handler(
     body: { answerId, answerUserId },
     session: { user },
   } = req;
-  console.log(req.body);
   if (answerUserId === user?.id) {
     const deleteAnswer = await client.answer.delete({
       where: {

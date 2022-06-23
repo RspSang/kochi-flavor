@@ -1,8 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import {
-  GoogleMap,
-  LoadScript,
-} from "@react-google-maps/api";
+import { GoogleMap, LoadScript } from "@react-google-maps/api";
 import useCoords from "@libs/client/useCoords";
 import mapStyles from "@libs/client/mapStyles";
 import useSWR from "swr";
@@ -15,7 +12,7 @@ const containerStyle = {
   width: "100%",
 };
 
-const defaultMapOptions = {
+export const defaultMapOptions = {
   clickableIcons: false,
   disableDefaultUI: true,
   styles: mapStyles,
@@ -55,7 +52,6 @@ const Map = () => {
   useEffect(() => {
     if (data?.ok) {
       setRestaurants(data.restaurants);
-      console.log(restaurants);
     }
   }, [data]);
 

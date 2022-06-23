@@ -14,21 +14,15 @@ const getPixelPositionOffset = (width: number, height: number) => ({
 const InfoMarker = ({
   data: { id, latitude, longitude, name },
 }: InfoMarkerProps) => {
+  const position = {
+    lat: +latitude!,
+    lng: +longitude!,
+  };
   return (
     <div>
-      <Marker
-        position={{
-          lat: +latitude!,
-          lng: +longitude!,
-        }}
-      />
+      <Marker position={position} />
       <OverlayView
-        position={
-          {
-            lat: +latitude!,
-            lng: +longitude!,
-          } as any
-        }
+        position={position}
         mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
         getPixelPositionOffset={getPixelPositionOffset}
       >

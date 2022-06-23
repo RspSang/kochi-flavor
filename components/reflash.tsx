@@ -43,7 +43,7 @@ export default function Reflash({
       {isMove ? (
         <div
           onClick={onReflashClick}
-          className="fixed w-full max-w-xl top-20 flex justify-center transition ease-in-out delay-150 hover:cursor-pointer z-50"
+          className="fixed w-full max-w-xl top-10 flex justify-center hover:cursor-pointer z-50"
         >
           <div className="rounded-full bg-white shadow-lg p-2">
             <span className="flex justify-center">
