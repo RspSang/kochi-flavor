@@ -1,8 +1,22 @@
+import { Dispatch, SetStateAction, useEffect } from "react";
+import { useForm } from "react-hook-form";
+
 interface SearchProps {
-  [key: string]: any;
+  setSearchText?: Dispatch<SetStateAction<string>>;
 }
 
-export default function Search({ ...rest }: SearchProps) {
+export default function Search({ setSearchText }: SearchProps) {
+  const { register, handleSubmit, watch } = useForm({ mode: "onChange" });
+  const search = watch("search");
+  const onValid = ({ search }: string) => {
+    setSearchText(search);
+  };
+
+  useEffect(() => {
+    if (search.length === 0) {
+      setSearchText("");
+    }
+  }, [search]);
   return (
     <div className="fixed w-full max-w-xl px-4 z-20">
       <div className="flex item-center relative  mt-7 ">
@@ -22,10 +36,13 @@ export default function Search({ ...rest }: SearchProps) {
             />
           </svg>
         </div>
-        <input
-          type="text"
-          className="border-solid border-2 pl-[3.5rem] border-orange-500 focus:border-orange-400 focus:outline-none focus:ring-orange-400 appearance-none rounded-full w-full py-2 shadow-sm"
-        />
+        <form onSubmit={handleSubmit(onValid)} className="w-full">
+          <input
+            {...register("search", { required: true })}
+            type="text"
+            className="border-solid border-2 pl-[3.5rem] border-orange-500 focus:border-orange-400 focus:outline-none focus:ring-orange-400 appearance-none rounded-full w-full py-2 shadow-sm"
+          />
+        </form>
       </div>
     </div>
   );

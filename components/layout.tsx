@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import Link from "next/link";
 import { cls } from "@libs/client/utils";
 import { useRouter } from "next/router";
@@ -12,6 +12,7 @@ interface LayoutProps {
   searchBar?: boolean;
   hasTabBar?: boolean;
   children?: React.ReactNode;
+  setSearchText?: Dispatch<SetStateAction<string>>;
 }
 
 export default function Layout({
@@ -20,6 +21,7 @@ export default function Layout({
   searchBar,
   hasTabBar,
   children,
+  setSearchText,
 }: LayoutProps) {
   const router = useRouter();
   const { data, error } = useSWR<ProfileResponse>("/api/users/me");
@@ -29,7 +31,7 @@ export default function Layout({
   };
   return (
     <div>
-      {searchBar ? <Search /> : null}
+      {searchBar ? <Search setSearchText={setSearchText}/> : null}
       {canGoBack ? (
         <div className="fixed top-0 flex h-12 items-center w-full max-w-xl justify-center  border-b bg-white px-10 text-lg  font-medium text-gray-800">
           <button onClick={onClick} className="absolute left-4">

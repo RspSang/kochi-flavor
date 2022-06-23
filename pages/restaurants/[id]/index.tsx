@@ -102,6 +102,7 @@ const RestaurantDetail: NextPage = () => {
   const writeReviewClick = () => {
     setToggleReview((prev) => !prev);
   };
+  const [cleanCuisine, setCleanCuisine] = useState([] as string[]);
   const wantClick = () => {
     if (wantLoading) return;
     want({});
@@ -179,6 +180,7 @@ const RestaurantDetail: NextPage = () => {
         lat: data.restaurant.latitude,
         lng: data.restaurant.longitude,
       });
+      setCleanCuisine(data.restaurant.cuisine.split(","));
       if (data.restaurant.open_time) {
         setTime(
           toHHMM(data.restaurant.open_time) +
@@ -323,15 +325,15 @@ const RestaurantDetail: NextPage = () => {
                   <span>{time}</span>
                 </div>
                 {data.restaurant.cuisine ? (
-                  <div className="flex justify-between">
+                  <div className="flex items-center justify-between">
                     <span>種類</span>
-                    <span>{data.restaurant.cuisine}</span>
-                  </div>
-                ) : null}
-                {data.restaurant.description ? (
-                  <div className="flex justify-between">
-                    <span>その他</span>
-                    <span>{data.restaurant.description}</span>
+                    <div className="flex space-x-2">
+                      {cleanCuisine.map((cuisine, i) => (
+                        <div className="rounded-full bg-slate-200 px-2" key={i}>
+                          <span>{cuisine}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 ) : null}
               </div>

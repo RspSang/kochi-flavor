@@ -5,25 +5,28 @@ import { Restaurant } from "@prisma/client";
 import Link from "next/link";
 import RestaurantCard from "@components/restaurant-card";
 import Loading from "@components/loading";
+import { useState } from "react";
 
 export interface RestaurantWithDistance extends Restaurant {
   distance: number;
 }
 
-interface ListResponse {
+export interface ListResponse {
   ok: boolean;
   restaurants: RestaurantWithDistance[];
 }
 
 export default function List() {
   const { latitude, longitude } = useCoords();
+  const [searchText, setSearchText] = useState("");
+  console.log(searchText);
   const { data } = useSWR<ListResponse>(
-    latitude && longitude
-      ? `/api/list?latitude=${latitude}&longitude=${longitude}`
+    (latitude && longitude) || searchText
+      ? `/api/list?latitude=${latitude}&longitude=${longitude}&searchText=${searchText}`
       : null
   );
   return (
-    <Layout searchBar hasTabBar>
+    <Layout searchBar hasTabBar setSearchText={setSearchText}>
       <div className="mt-8">
         {data ? (
           data?.restaurants?.map((restaurant) => (
