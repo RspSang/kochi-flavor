@@ -148,6 +148,9 @@ const RestaurantDetail: NextPage = () => {
   };
   const photo = watch("photo");
   const [photoPreview, setPhotoPreview] = useState("");
+  const onImageClick = () => {
+    setPhotoPreview("");
+  };
   useEffect(() => {
     if (photo && photo.length > 0) {
       const file = photo[0];
@@ -364,6 +367,7 @@ const RestaurantDetail: NextPage = () => {
                       <Image
                         layout="fill"
                         src={photoPreview}
+                        onClick={onImageClick}
                         className="w-full rounded-lg object-cover text-gray-600"
                       />
                     </div>
