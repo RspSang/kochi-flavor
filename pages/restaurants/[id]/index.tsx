@@ -15,6 +15,7 @@ import useUser from "@libs/client/useUser";
 import { cls } from "@libs/client/utils";
 import ReviewCard from "@components/review-card";
 import Link from "next/link";
+import Rating from "react-rating";
 
 interface UserWithCount extends User {
   _count: { reviews: number };
@@ -43,6 +44,7 @@ interface RestaurantResponse {
 interface ReviewForm {
   photo: FileList;
   review: string;
+  rate: number;
 }
 
 const containerStyle = {
@@ -77,6 +79,7 @@ const RestaurantDetail: NextPage = () => {
     handleSubmit,
     reset,
     setFocus,
+    setValue,
     watch,
     formState: { errors },
   } = useForm<ReviewForm>();
@@ -127,7 +130,7 @@ const RestaurantDetail: NextPage = () => {
       false
     );
   };
-  const onValid = async ({ photo, review }: ReviewForm) => {
+  const onValid = async ({ photo, review, rate }: ReviewForm) => {
     if (loading) return;
     if (photo && photo.length > 0) {
       const { uploadURL } = await (await fetch(`/api/files`)).json();
@@ -141,9 +144,9 @@ const RestaurantDetail: NextPage = () => {
           body: form,
         })
       ).json();
-      writeReview({ review, photoId: id });
+      writeReview({ review, photoId: id, rate });
     } else {
-      writeReview({ review });
+      writeReview({ review, rate });
     }
   };
   const photo = watch("photo");
@@ -361,6 +364,46 @@ const RestaurantDetail: NextPage = () => {
           {toggleReview ? (
             <div className="py-4">
               <form onSubmit={handleSubmit(onValid)}>
+                <div className="flex justify-center">
+                  <div className="">
+                    <Rating
+                      onClick={(value) => setValue("rate", value)}
+                      fractions={2}
+                      emptySymbol={
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth="1"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
+                          />
+                        </svg>
+                      }
+                      fullSymbol={
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-6 w-6"
+                          fill="rgb(249 115 22)"
+                          viewBox="0 0 24 24"
+                          stroke="rgb(249 115 22)"
+                          strokeWidth="1"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
+                          />
+                        </svg>
+                      }
+                    />
+                  </div>
+                </div>
                 <div>
                   {photoPreview ? (
                     <div className="relative pb-80">
