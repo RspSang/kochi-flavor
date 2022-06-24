@@ -23,19 +23,33 @@ export default function List() {
   const page = useInfiniteScroll();
   const [searchText, setSearchText] = useState("");
   const getKey = (pageIndex: number, previousPageData: ListResponse) => {
-    if ((pageIndex === 0 && latitude && longitude) || searchText)
-      return `/api/list?latitude=${latitude}&longitude=${longitude}&searchText=${searchText}&page=1`;
-    if (pageIndex + 1 > previousPageData.pages) return null;
-    return `/api/list?latitude=${latitude}&longitude=${longitude}&searchText=${searchText}&page=${
-      pageIndex + 1
-    }`;
+    if (latitude && longitude) {
+      if (pageIndex === 0) {
+        return `/api/list?latitude=${latitude}&longitude=${longitude}&searchText=${searchText}&page=1`;
+      }
+      if (pageIndex + 1 > previousPageData.pages) return null;
+      return `/api/list?latitude=${latitude}&longitude=${longitude}&page=${
+        pageIndex + 1
+      }`;
+    } else return null;
   };
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
-  const { data, setSize } = useSWRInfinite<ListResponse>(getKey, fetcher);
+  const { data, mutate, setSize } = useSWRInfinite<ListResponse>(
+    getKey,
+    fetcher
+  );
   const restaurants = data ? data.map((item) => item.restaurants).flat() : [];
   useEffect(() => {
-    setSize(page);
-  }, [setSize, page]);
+    if (searchText) {
+      setSize(1);
+    } else {
+      setSize(page);
+    }
+  }, [setSize, page, searchText]);
+
+  useEffect(() => {
+    console.log(searchText);
+  }, [searchText]);
 
   return (
     <Layout searchBar hasTabBar setSearchText={setSearchText}>
@@ -44,7 +58,7 @@ export default function List() {
           restaurants?.map((restaurant) => (
             <Link href={`restaurants/${restaurant.id}`} key={restaurant.id}>
               <a>
-                <RestaurantCard restaurant={restaurant} key={restaurant.id} />
+                <RestaurantCard restaurant={restaurant} />
               </a>
             </Link>
           ))

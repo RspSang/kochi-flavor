@@ -23,22 +23,19 @@ const Want: NextPage = () => {
   );
   return (
     <Layout canGoBack title="行きたい所">
-      {data ? (
-        data.restaurants?.map((restaurant) => (
-          <Link href={`/restaurants/${restaurant.id}`} key={restaurant.id}>
-            <a>
-              <RestaurantCard
-                name={restaurant.name}
-                address={restaurant.address}
-                distance={restaurant.distance}
-                key={restaurant.id}
-              />
-            </a>
-          </Link>
-        ))
-      ) : (
-        <Loading />
-      )}
+      <div className="mt-2">
+        {data ? (
+          data.restaurants?.map((restaurant) => (
+            <Link href={`/restaurants/${restaurant.id}`} key={restaurant.id}>
+              <a>
+                <RestaurantCard restaurant={restaurant} />
+              </a>
+            </Link>
+          ))
+        ) : (
+          <Loading />
+        )}
+      </div>
     </Layout>
   );
 };
