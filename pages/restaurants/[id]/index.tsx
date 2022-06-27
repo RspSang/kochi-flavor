@@ -16,6 +16,7 @@ import { cls } from "@libs/client/utils";
 import ReviewCard from "@components/review-card";
 import Link from "next/link";
 import Rating from "react-rating";
+import review from "pages/api/users/[id]/review";
 
 interface UserWithCount extends User {
   _count: { reviews: number };
@@ -34,9 +35,13 @@ export interface ReviewResponse {
   reviews: ReviewWithUser[];
 }
 
+interface RestaurantWithCount extends Restaurant {
+  _count: { reviews: number };
+}
+
 interface RestaurantResponse {
   ok: boolean;
-  restaurant: Restaurant;
+  restaurant: RestaurantWithCount;
   want: boolean;
   went: boolean;
 }
@@ -102,6 +107,7 @@ const RestaurantDetail: NextPage = () => {
   const [position, setPosition] = useState({});
   const [address, setAddress] = useState("");
   const [time, setTime] = useState("");
+  const [rate, setRate] = useState(0);
   const writeReviewClick = () => {
     setToggleReview((prev) => !prev);
   };
@@ -164,6 +170,7 @@ const RestaurantDetail: NextPage = () => {
     if (writeReviewData && writeReviewData.ok) {
       reset();
       reviewMutate();
+      mutate();
       setToggleReview((prev) => !prev);
     }
   }, [writeReviewData, reset, reviewMutate]);
@@ -198,16 +205,33 @@ const RestaurantDetail: NextPage = () => {
       }
     }
   }, [data]);
+  useEffect(() => {
+    if (reviewData?.ok && reviewData.reviews) {
+      const rates = reviewData.reviews.map((review) => review.rate);
+      if (rates.length > 0) {
+        setRate(rates.reduce((accumulator, curr) => accumulator + curr));
+      }
+    }
+  }, [reviewData]);
   return (
     <Layout canGoBack>
       {data?.ok && data.restaurant ? (
         <div className="px-4 max-w-xl mt-6 space-y-1">
           <div className="pb-4">
-            <div className="px-3 py-4 space-x-6">
+            <div className="px-3 py-4 space-x-6 flex items-end">
               <span className="text-4xl font-medium">
                 {data.restaurant.name}
               </span>
-              <span className="text-orange-500 text-3xl">3.8</span>
+              {data.restaurant._count.reviews ? (
+                <div className="flex space-x-2 items-center">
+                  <span className="text-orange-500 text-3xl">
+                    {rate / data.restaurant._count.reviews}
+                  </span>
+                  <span className="text-slate-400">
+                    {data.restaurant._count.reviews}名
+                  </span>
+                </div>
+              ) : null}
             </div>
             <div
               className={cls(
@@ -357,6 +381,7 @@ const RestaurantDetail: NextPage = () => {
                     review={review}
                     type={"simple"}
                     reviewMutate={reviewMutate}
+                    mutate={mutate}
                   />
                 </div>
               ))
@@ -375,7 +400,7 @@ const RestaurantDetail: NextPage = () => {
                           className="h-6 w-6"
                           fill="none"
                           viewBox="0 0 24 24"
-                          stroke="currentColor"
+                          stroke="rgb(249 115 22)"
                           strokeWidth="1"
                         >
                           <path

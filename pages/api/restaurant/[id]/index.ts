@@ -16,30 +16,8 @@ async function handler(
       id: +id.toString(),
     },
     include: {
-      reviews: {
-        select: {
-          id: true,
-          review: true,
-          restaurantId: true,
-          _count: {
-            select: {
-              likes: true,
-              comments: true,
-            },
-          },
-          user: {
-            select: {
-              id: true,
-              name: true,
-              avatar: true,
-              _count: {
-                select: {
-                  reviews: true,
-                },
-              },
-            },
-          },
-        },
+      _count: {
+        select: { reviews: true },
       },
     },
   });
