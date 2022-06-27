@@ -16,7 +16,6 @@ import { cls } from "@libs/client/utils";
 import ReviewCard from "@components/review-card";
 import Link from "next/link";
 import Rating from "react-rating";
-import review from "pages/api/users/[id]/review";
 
 interface UserWithCount extends User {
   _count: { reviews: number };
@@ -85,6 +84,7 @@ const RestaurantDetail: NextPage = () => {
     reset,
     setFocus,
     setValue,
+    getValues,
     watch,
     formState: { errors },
   } = useForm<ReviewForm>();
@@ -225,7 +225,7 @@ const RestaurantDetail: NextPage = () => {
               {data.restaurant._count.reviews ? (
                 <div className="flex space-x-2 items-center">
                   <span className="text-orange-500 text-3xl">
-                    {rate / data.restaurant._count.reviews}
+                    {(rate / data.restaurant._count.reviews).toFixed(2)}
                   </span>
                   <span className="text-slate-400">
                     {data.restaurant._count.reviews}名
@@ -390,9 +390,27 @@ const RestaurantDetail: NextPage = () => {
             <div className="py-4">
               <form onSubmit={handleSubmit(onValid)}>
                 <div className="flex justify-center">
-                  <div className="">
+                  <div className="bg-slate-200 pt-1 rounded-full flex space-x-2 mb-2 px-2 shadow-md">
+                    <span className="text-sm text-gray-500">評価</span>
                     <Rating
                       onClick={(value) => setValue("rate", value)}
+                      placeholderRating={getValues("rate")}
+                      placeholderSymbol={
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-6 w-6"
+                          fill="rgb(249 115 22)"
+                          viewBox="0 0 24 24"
+                          stroke="rgb(249 115 22)"
+                          strokeWidth="1"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
+                          />
+                        </svg>
+                      }
                       fractions={2}
                       emptySymbol={
                         <svg
