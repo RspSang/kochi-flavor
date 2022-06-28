@@ -35,10 +35,10 @@ const Profile: NextPage = () => {
   };
   return (
     <Layout hasTabBar>
-      <div className="px-4 max-w-xl">
+      <div className="px-4 max-w-xl pb-28">
         {data?.ok ? (
           <>
-            <div className="flex items-center mt-2 space-x-3 px-6">
+            <div className="flex items-center mt-4 space-x-3 px-6">
               {data.profile.avatar ? (
                 <Image
                   height={72}
@@ -47,7 +47,7 @@ const Profile: NextPage = () => {
                   className="rounded-full bg-slate-500"
                 />
               ) : (
-                <div className="h-20 w-20 rounded-full bg-slate-500" />
+                <div className="h-16 w-16 rounded-full bg-slate-500" />
               )}
               <div className="flex flex-col">
                 <span className="font-semibold text-lg text-gray-900">
@@ -62,10 +62,10 @@ const Profile: NextPage = () => {
                 ) : null}
               </div>
             </div>
-            <div className="mt-4 px-10 border-b-2 pb-4">
+            <div className="mt-2 px-10 border-b-2 pb-4">
               <span>{data.profile.userDescription}</span>
             </div>
-            <div className="mt-8 flex justify-around">
+            <div className="mt-6 flex justify-around">
               <div className="flex justify-center flex-col items-center">
                 <p className="font-semibold text-lg">レビュー</p>
                 <p className="text-slate-500 text-lg">
@@ -85,7 +85,7 @@ const Profile: NextPage = () => {
                 </p>
               </div>
             </div>
-            <div className="mt-10 flex flex-col px-8 space-y-3">
+            <div className="mt-6 flex flex-col px-8 space-y-3">
               <div>
                 <span className="text-sm text-gray-500">グルメ</span>
               </div>
@@ -260,6 +260,10 @@ const Profile: NextPage = () => {
                 </button>
               </div>
             ) : null}
+            <div className="flex mt-4 flex-col items-center">
+              <span className="text-sm text-gray-500">©2022. PARKHYEONJUN all rights reserved.</span>
+              <span className="text-xs text-gray-400 mt-1">問い合わせ: heydaylip@gmail.com</span>
+            </div>
           </>
         ) : (
           <Loading />

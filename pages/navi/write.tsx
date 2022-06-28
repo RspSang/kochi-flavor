@@ -47,7 +47,7 @@ const Write: NextPage = () => {
             required: "質問内容を入力してください",
             minLength: { value: 5, message: "5文字以上入力してください" },
           })}
-          placeholder="周りの人に質問しよう!"
+          placeholder="地域の皆さんに質問しよう!"
           required
         />
         {errors ? (

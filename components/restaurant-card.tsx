@@ -1,12 +1,13 @@
 import { cls } from "@libs/client/utils";
 import Image from "next/image";
 import { RestaurantWithDistance } from "pages/list";
+import React from "react";
 
 interface RestaurantCardProps {
   restaurant: RestaurantWithDistance;
 }
 
-export default function RestaurantCard({ restaurant }: RestaurantCardProps) {
+const RestaurantCard = ({ restaurant }: RestaurantCardProps) => {
   const clenDistance = (+restaurant.distance.toFixed(2)).toString() + "km";
   const cleanCuisine = restaurant.cuisine.split(",");
   return (
@@ -47,4 +48,6 @@ export default function RestaurantCard({ restaurant }: RestaurantCardProps) {
       </div>
     </div>
   );
-}
+};
+
+export default React.memo(RestaurantCard);

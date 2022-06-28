@@ -1,13 +1,14 @@
 import { Restaurant } from "@prisma/client";
 import { Marker, OverlayView } from "@react-google-maps/api";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 interface InfoMarkerProps {
   data: Restaurant;
 }
 
 const InfoMarker = ({
-  data: { id, latitude, longitude, name },
+  data: { id, latitude, longitude, name, cuisine },
 }: InfoMarkerProps) => {
   const position = {
     lat: +latitude!,
@@ -17,6 +18,14 @@ const InfoMarker = ({
     x: -(width / 2),
     y: -(height / 2) - 40,
   });
+  const [cleanCuisine, setCleanCuisine] = useState([] as string[]);
+
+  useEffect(() => {
+    if (cuisine) {
+      setCleanCuisine(cuisine.split(","));
+    }
+  }, [cuisine]);
+
   return (
     <>
       <Marker position={position} />
@@ -41,7 +50,7 @@ const InfoMarker = ({
                 <div className="flex flex-col hover:text-orange-500">
                   <span className="text-sm font-semibold">{name}</span>
                   <div className="flex space-x-2 text-xs">
-                    <div className="flex">
+                    {/* <div className="flex">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="h-3 w-3 fill-red-500"
@@ -51,8 +60,19 @@ const InfoMarker = ({
                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                       </svg>
                       <span>5.00</span>
-                    </div>
-                    <span>和食</span>
+                    </div> */}
+                    {cuisine ? (
+                      <div className="space-x-1 flex">
+                        {cleanCuisine.map((cuisine, i) => (
+                          <div
+                            className="rounded-full bg-slate-200 px-1"
+                            key={i}
+                          >
+                            <span>{cuisine}</span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : null}
                   </div>
                 </div>
               </div>

@@ -96,7 +96,7 @@ const EditProfile: NextPage = () => {
     <Layout canGoBack title="プロフィールの編集">
       <form
         onSubmit={handleSubmit(onValid)}
-        className="space-y-4 py-10 px-4 max-w-xl"
+        className="space-y-4 py-5 px-4 max-w-xl"
       >
         <div className="flex items-center space-x-3">
           {avatarPreview ? (

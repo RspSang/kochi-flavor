@@ -31,7 +31,7 @@ export default function Layout({
   };
   return (
     <div>
-      {searchBar ? <Search setSearchText={setSearchText}/> : null}
+      {searchBar ? <Search setSearchText={setSearchText} /> : null}
       {canGoBack ? (
         <div className="fixed top-0 flex h-12 items-center w-full max-w-xl justify-center  border-b bg-white px-10 text-lg  font-medium text-gray-800">
           <button onClick={onClick} className="absolute left-4">
@@ -55,7 +55,9 @@ export default function Layout({
           ) : null}
         </div>
       ) : null}
-      <div className="pt-12">{children}</div>
+      <div className={cls(canGoBack || searchBar ? "pt-12" : "pt-2")}>
+        {children}
+      </div>
       {hasTabBar ? (
         <nav className="fixed bottom-0 flex w-full max-w-xl justify-between border-t bg-white px-10 pb-5 pt-3 text-xs text-gray-700">
           <Link href="/">
