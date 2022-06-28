@@ -6,11 +6,6 @@ interface InfoMarkerProps {
   data: Restaurant;
 }
 
-const getPixelPositionOffset = (width: number, height: number) => ({
-  x: -(width / 2),
-  y: -(height / 2) - 40,
-});
-
 const InfoMarker = ({
   data: { id, latitude, longitude, name },
 }: InfoMarkerProps) => {
@@ -18,8 +13,12 @@ const InfoMarker = ({
     lat: +latitude!,
     lng: +longitude!,
   };
+  const getPixelPositionOffset = (width: number, height: number) => ({
+    x: -(width / 2),
+    y: -(height / 2) - 40,
+  });
   return (
-    <div>
+    <>
       <Marker position={position} />
       <OverlayView
         position={position}
@@ -61,7 +60,7 @@ const InfoMarker = ({
           </a>
         </Link>
       </OverlayView>
-    </div>
+    </>
   );
 };
 
