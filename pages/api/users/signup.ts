@@ -23,47 +23,34 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         error: "メールアドレスは既に使用中です",
       });
     } else {
-      // SendGrid 요금문제로 커맨드아웃
-
-      // const foundToken = await client.token.findUnique({
-      //   where: {
-      //     email,
-      //   },
-      // });
-      // if (foundToken) {
-      //   await client.token.deleteMany({ where: { id: foundToken.id } });
-      // }
+      const foundToken = await client.token.findUnique({
+        where: {
+          email,
+        },
+      });
+      if (foundToken) {
+        await client.token.deleteMany({ where: { id: foundToken.id } });
+      }
       const saltRound = 10;
       const salt = await bcrypt.genSalt(saltRound);
       const hashedPW = await bcrypt.hash(password, salt);
-      // const payload = Math.floor(100000 + Math.random() * 900000) + "";
+      const payload = Math.floor(100000 + Math.random() * 900000) + "";
 
-      // const token = await client.token.create({
-      //   data: {
-      //     payload,
-      //     name,
-      //     email,
-      //     password: hashedPW,
-      //   },
-      // });
-      // const sendEmail = await mail.send({
-      //   from: "akwek33@naver.com",
-      //   to: "akwek33@naver.com",
-      //   subject: "高知プレートの認証コード",
-      //   text: `お客様の高知プレート認証コード:${payload}`,
-      //   html: `<strong>お客様の高知プレート認証コード:${payload}</strong>`,
-      // });
-      const user = await client.user.create({
+      const token = await client.token.create({
         data: {
-          name: name,
-          email: email,
+          payload,
+          name,
+          email,
           password: hashedPW,
         },
       });
-      req.session.user = {
-        id: user.id,
-      };
-      await req.session.save();
+      const sendEmail = await mail.send({
+        from: "akwek33@naver.com",
+        to: email,
+        subject: "高知プレートの認証コード",
+        text: `お客様の高知プレート認証コード:${payload}`,
+        html: `<strong>お客様の高知プレート認証コード:${payload}</strong>`,
+      });
 
       res.json({ ok: true });
     }

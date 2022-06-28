@@ -5,7 +5,6 @@ import { NextPage } from "next";
 import { useForm } from "react-hook-form";
 import useMutation from "@libs/client/useMutation";
 import { useRouter } from "next/router";
-import { User } from "@prisma/client";
 import { useEffect } from "react";
 
 interface SignUpForm {
@@ -44,23 +43,19 @@ const SignUp: NextPage = () => {
     signUp(inputData);
   };
 
-  // SendGrid 요금문제로 커맨드아웃
-
-  // const [confirmToken, { loading: tokenLoading, data: tokenData }] =
-  //   useMutation<TokenResponse>("/api/users/confirm");
-  // const { register: tokenRegister, handleSubmit: tokenHandleSubmit } =
-  //   useForm<TokenForm>();
-  // const onTokenValid = (validForm: TokenForm) => {
-  //   if (tokenLoading) return;
-  //   confirmToken(validForm);
-  // };
+  const [confirmToken, { loading: tokenLoading, data: tokenData }] =
+    useMutation<TokenResponse>("/api/users/confirm");
+  const { register: tokenRegister, handleSubmit: tokenHandleSubmit } =
+    useForm<TokenForm>();
+  const onTokenValid = (validForm: TokenForm) => {
+    if (tokenLoading) return;
+    confirmToken(validForm);
+  };
   useEffect(() => {
-    // if (Tokendata?.ok) {
-    console.log(data);
-    if (data?.ok) {
+    if (tokenData?.ok) {
       router.push("/");
     }
-  }, [data, router]);
+  }, [tokenData, router]);
 
   return (
     <div className="mt-16 px-6 max-w-xl">
@@ -74,7 +69,7 @@ const SignUp: NextPage = () => {
             </Link>
           </h5>
         </div>
-        {/* {data?.ok ? (
+        {data?.ok ? (
           <form
             onSubmit={tokenHandleSubmit(onTokenValid)}
             className="mt-8 flex flex-col space-y-4"
@@ -96,72 +91,72 @@ const SignUp: NextPage = () => {
             </span>
             <Button text={tokenLoading ? "ローディング中" : "送信"} />
           </form>
-        ) : ( */}
-        <form
-          onSubmit={handleSubmit(onValid)}
-          className="mt-8 flex flex-col space-y-3"
-        >
-          <Input
-            register={register("name", {
-              required: true,
-              minLength: {
-                value: 3,
-                message: "ニックネームは3文字以上必要です",
-              },
-            })}
-            name="name"
-            label="ニックネーム"
-            type="text"
-            required
-          />
-          {errors.name ? (
-            <span className="block text-sm text-red-500">
-              {errors.name.message}
-            </span>
-          ) : null}
-
-          <Input
-            register={register("email", {
-              required: "メールアドレスは必須です",
-              pattern: {
-                value:
-                  /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/,
-                message: "メール形式のみ有効です",
-              },
-            })}
-            name="email"
-            label="メールアドレス"
-            type="text"
-            required
-          />
-          {errors.email ? (
-            <span className="block text-sm text-red-500">
-              {errors.email.message}
-            </span>
-          ) : null}
-          {data?.error ? (
-            <span className="block text-sm text-red-500">{data.error}</span>
-          ) : null}
-          <Input
-            register={register("password", {
-              required: true,
-              minLength: {
-                value: 6,
-                message: "パスワードは6文字以上必要です",
-              },
-            })}
-            name="password"
-            label="パスワード"
-            type="password"
-            required
-          />
-          {errors.password ? (
-            <span className="block text-sm text-red-500">
-              {errors.password.message}
-            </span>
-          ) : null}
-          <Button text={loading ? "読み込み中" : "会員登録"} />
-        </form>
+        ) : (
+          <form
+            onSubmit={handleSubmit(onValid)}
+            className="mt-8 flex flex-col space-y-3"
+          >
+            <Input
+              register={register("name", {
+                required: true,
+                minLength: {
+                  value: 3,
+                  message: "ニックネームは3文字以上必要です",
+                },
+              })}
+              name="name"
+              label="ニックネーム"
+              type="text"
+              required
+            />
+            {errors.name ? (
+              <span className="block text-sm text-red-500">
+                {errors.name.message}
+              </span>
+            ) : null}
+            <Input
+              register={register("email", {
+                required: "メールアドレスは必須です",
+                pattern: {
+                  value:
+                    /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/,
+                  message: "メール形式のみ有効です",
+                },
+              })}
+              name="email"
+              label="メールアドレス"
+              type="text"
+              required
+            />
+            {errors.email ? (
+              <span className="block text-sm text-red-500">
+                {errors.email.message}
+              </span>
+            ) : null}
+            {data?.error ? (
+              <span className="block text-sm text-red-500">{data.error}</span>
+            ) : null}
+            <Input
+              register={register("password", {
+                required: true,
+                minLength: {
+                  value: 6,
+                  message: "パスワードは6文字以上必要です",
+                },
+              })}
+              name="password"
+              label="パスワード"
+              type="password"
+              required
+            />
+            {errors.password ? (
+              <span className="block text-sm text-red-500">
+                {errors.password.message}
+              </span>
+            ) : null}
+            <Button text={loading ? "読み込み中" : "会員登録"} />
+          </form>
+        )}
       </div>
     </div>
   );
