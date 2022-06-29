@@ -29,16 +29,13 @@ const Map = () => {
     () => ({ lat: latitude!, lng: longitude! }),
     [latitude, longitude]
   );
-  const [size, setSize] = useState<undefined | google.maps.Size>(undefined);
   const [isMove, setIsMove] = useState(false);
   const [mapref, setMapRef] = useState(null);
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const handleOnLoad = (map: any) => {
     setMapRef(map);
   };
-  const createOffsetSize = () => {
-    return setSize(new window.google.maps.Size(0, -45));
-  };
+
   const { data } = useSWR<RestaurantResponse>(
     latitude && longitude
       ? `/api/restaurant?latitude=${latitude}&longitude=${longitude}`
@@ -57,10 +54,7 @@ const Map = () => {
 
   return (
     <div className="absolute w-full h-full top-0 -z-50 max-w-xl">
-      <LoadScript
-        googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAP_KEY!}
-        onLoad={() => createOffsetSize()}
-      >
+      <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAP_KEY!}>
         <GoogleMap
           options={defaultMapOptions}
           mapContainerStyle={containerStyle}
