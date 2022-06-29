@@ -40,7 +40,7 @@ const Write: NextPage = () => {
   }, [data, router]);
 
   return (
-    <Layout canGoBack title="質問する">
+    <Layout canGoBack backURL="/navi" title="質問する">
       <form className="space-y-4 p-4" onSubmit={handleSubmit(onValid)}>
         <TextArea
           register={register("question", {

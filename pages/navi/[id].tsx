@@ -120,7 +120,7 @@ const NaviDetail: NextPage = () => {
     }
   }, [answerDeleteData]);
   return (
-    <Layout canGoBack>
+    <Layout canGoBack backURL="/navi">
       <div
         onClick={() => {
           if (dropDown) {

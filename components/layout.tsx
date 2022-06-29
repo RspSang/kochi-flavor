@@ -9,6 +9,7 @@ import { ProfileResponse } from "@libs/client/useUser";
 interface LayoutProps {
   title?: string;
   canGoBack?: boolean;
+  backURL?: string;
   searchBar?: boolean;
   hasTabBar?: boolean;
   children?: React.ReactNode;
@@ -18,6 +19,7 @@ interface LayoutProps {
 export default function Layout({
   title,
   canGoBack,
+  backURL,
   searchBar,
   hasTabBar,
   children,
@@ -27,13 +29,17 @@ export default function Layout({
   const { data, error } = useSWR<ProfileResponse>("/api/users/me");
 
   const onClick = () => {
-    router.back();
+    if (backURL === "back") {
+      router.back();
+    } else if (backURL) {
+      router.replace(backURL);
+    }
   };
   return (
     <div>
       {searchBar ? <Search setSearchText={setSearchText} /> : null}
       {canGoBack ? (
-        <div className="fixed top-0 flex h-12 items-center w-full max-w-xl justify-center  border-b bg-white px-10 text-lg  font-medium text-gray-800">
+        <div className="fixed top-0 flex h-12 items-center w-full max-w-xl justify-center z-40 border-b bg-white px-10 text-lg  font-medium text-gray-800">
           <button onClick={onClick} className="absolute left-4">
             <svg
               className="h-6 w-6"

@@ -29,6 +29,7 @@ export interface ReviewWithUser extends Review {
     comments: number;
   };
   likes: Like[];
+  restaurant: Restaurant;
 }
 export interface ReviewResponse {
   ok: boolean;
@@ -211,10 +212,10 @@ const RestaurantDetail: NextPage = () => {
     }
   }, [reviewData]);
   return (
-    <Layout canGoBack>
+    <Layout canGoBack backURL="/">
       {data?.ok && data.restaurant ? (
-        <div className="px-4 max-w-xl mt-6 space-y-1">
-          <div className="pb-4">
+        <div className="px-4 max-w-xl mt-2 space-y-1">
+          <div className="pb-2">
             <div className="px-3 py-4 space-x-6 flex items-end">
               <span className="text-4xl font-medium">
                 {data.restaurant.name}
@@ -230,12 +231,7 @@ const RestaurantDetail: NextPage = () => {
                 </div>
               ) : null}
             </div>
-            <div
-              className={cls(
-                "flex relative space-x-2",
-                data.restaurant.image ? "overflow-x-scroll" : ""
-              )}
-            >
+            <div className="flex relative space-x-2">
               {data.restaurant.image ? (
                 <div>
                   <Image

@@ -16,16 +16,20 @@ async function handler(
       userId: +id,
     },
   });
-  const wantRestaurantsId = wantRestaurants.map(
-    (wantRestaurant) => wantRestaurant.restaurantId
-  );
-  const restaurants = await client.$queryRaw`SELECT * , ST_Distance_Sphere(
+  if (wantRestaurants.length > 0) {
+    const wantRestaurantsId = wantRestaurants.map(
+      (wantRestaurant) => wantRestaurant.restaurantId
+    );
+    const restaurants = await client.$queryRaw`SELECT * , ST_Distance_Sphere(
     point(${longitude}, ${latitude}),
     point(longitude, latitude))/1000 as distance FROM Restaurant WHERE Restaurant.id IN (${Prisma.join(
       wantRestaurantsId
     )})
     ORDER BY distance LIMIT 10`;
-  res.json({ ok: true, restaurants });
+    res.json({ ok: true, restaurants });
+  } else {
+    res.json({ ok: true });
+  }
 }
 
 export default withApiSession(

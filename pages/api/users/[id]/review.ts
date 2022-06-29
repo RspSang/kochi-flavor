@@ -24,7 +24,7 @@ async function handler(
       },
       restaurant: {
         select: {
-          id: true,
+          name: true,
         },
       },
       _count: {

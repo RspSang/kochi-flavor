@@ -32,6 +32,11 @@ async function handler(
           comments: true,
         },
       },
+      restaurant: {
+        select: {
+          name: true,
+        },
+      },
       likes: {
         select: {
           userId: true,

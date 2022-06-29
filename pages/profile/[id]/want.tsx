@@ -22,7 +22,11 @@ const Want: NextPage = () => {
       : null
   );
   return (
-    <Layout canGoBack title="行きたい所">
+    <Layout
+      canGoBack
+      backURL={`/profile/${router.query.id}`}
+      title="行きたい所"
+    >
       <div className="mt-2">
         {data ? (
           data.restaurants?.map((restaurant) => (

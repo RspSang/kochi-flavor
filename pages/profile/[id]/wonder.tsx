@@ -20,7 +20,7 @@ const Wonders: NextPage = () => {
   const { user } = useUser();
 
   return (
-    <Layout canGoBack title="気になる">
+    <Layout canGoBack backURL={`/profile/${user?.id}`} title="気になる">
       {data?.ok ? (
         data.navis?.map((navi) => <WonderingCard navi={navi} key={navi.id} />)
       ) : (

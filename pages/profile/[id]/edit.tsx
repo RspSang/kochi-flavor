@@ -92,8 +92,19 @@ const EditProfile: NextPage = () => {
   useEffect(() => {
     clearErrors();
   }, [name]);
+  useEffect(() => {
+    if (router.query.id) {
+      if (+router.query.id !== user?.id) {
+        router.replace(`/profile/${user?.id}/edit`);
+      }
+    }
+  }, [router, user]);
   return (
-    <Layout canGoBack title="プロフィールの編集">
+    <Layout
+      canGoBack
+      backURL={`/profile/${user?.id}`}
+      title="プロフィールの編集"
+    >
       <form
         onSubmit={handleSubmit(onValid)}
         className="space-y-4 py-5 px-4 max-w-xl"

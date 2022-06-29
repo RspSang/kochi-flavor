@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import ReviewCard from "@components/review-card";
 import Loading from "@components/loading";
-import useUser from "@libs/client/useUser";
 import { ReviewResponse } from "pages/restaurants/[id]";
 
 const Reviews: NextPage = () => {
@@ -13,9 +12,12 @@ const Reviews: NextPage = () => {
   const { data } = useSWR<ReviewResponse>(
     router.query.id ? `/api/users/${router.query.id}/review` : null
   );
-  const { user } = useUser();
   return (
-    <Layout canGoBack title="書いたレビュー">
+    <Layout
+      canGoBack
+      backURL={`/profile/${router.query.id}`}
+      title="書いたレビュー"
+    >
       {data ? (
         data?.reviews?.map((review) => (
           <Link

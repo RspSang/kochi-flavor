@@ -27,6 +27,11 @@ async function handler(
           },
         },
       },
+      restaurant: {
+        select: {
+          name: true,
+        },
+      },
       _count: {
         select: {
           likes: true,
