@@ -45,10 +45,6 @@ export default function List() {
     }
   }, [setSize, page, searchText]);
 
-  useEffect(() => {
-    console.log(searchText);
-  }, [searchText]);
-
   return (
     <>
     <Header title="リスト"/>

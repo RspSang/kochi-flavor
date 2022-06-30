@@ -2,13 +2,13 @@ import { Dispatch, SetStateAction, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 interface SearchProps {
-  setSearchText?: Dispatch<SetStateAction<string>>;
+  setSearchText: Dispatch<SetStateAction<string>>;
 }
 
 export default function Search({ setSearchText }: SearchProps) {
   const { register, handleSubmit, watch } = useForm({ mode: "onChange" });
   const search = watch("search");
-  const onValid = ({ search }: string) => {
+  const onValid = ({ search }: any) => {
     setSearchText(search);
   };
 
