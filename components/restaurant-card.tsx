@@ -8,7 +8,7 @@ interface RestaurantCardProps {
 }
 
 const RestaurantCard = ({ restaurant }: RestaurantCardProps) => {
-  const clenDistance = (+restaurant.distance.toFixed(2)).toString() + "km";
+  const clenDistance = (+restaurant.distance?.toFixed(2)).toString() + "km";
   const cleanCuisine = restaurant.cuisine.split(",");
   return (
     <div className="px-4 mb-3">

@@ -34,10 +34,7 @@ export default function List() {
     } else return null;
   };
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
-  const { data, mutate, setSize } = useSWRInfinite<ListResponse>(
-    getKey,
-    fetcher
-  );
+  const { data, setSize } = useSWRInfinite<ListResponse>(getKey, fetcher);
   const restaurants = data ? data.map((item) => item.restaurants).flat() : [];
   useEffect(() => {
     if (searchText) {

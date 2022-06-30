@@ -261,8 +261,9 @@ const Profile: NextPage = () => {
               </div>
             ) : null}
             <div className="flex mt-4 flex-col items-center">
-              <span className="text-sm text-gray-500">©2022. PARKHYEONJUN all rights reserved.</span>
-              <span className="text-xs text-gray-400 mt-1">問い合わせ: heydaylip@gmail.com</span>
+              <span className="text-xs text-gray-400 mt-1">
+                問い合わせ: heydaylip@gmail.com
+              </span>
             </div>
           </>
         ) : (

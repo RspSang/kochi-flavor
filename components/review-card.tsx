@@ -307,16 +307,16 @@ export default function ReviewCard({
           </div>
         </div>
       </div>
+      <Link href={`/restaurants/${review.restaurantId}`}>
+        <a>
+          <span className="text-orange-400 text-sm">
+            @{review.restaurant.name}
+          </span>
+        </a>
+      </Link>
       <Link href={`/restaurants/${router.query.id}/reviews/${review.id}`}>
         <a>
           <div className="mt-2 px-3 pb-4">
-            <Link href={`/restaurants/${review.restaurantId}`}>
-              <a>
-                <span className="text-orange-400 block text-sm">
-                  @{review.restaurant.name}
-                </span>
-              </a>
-            </Link>
             <span>{review.review}</span>
           </div>
         </a>

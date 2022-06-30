@@ -145,7 +145,7 @@ export default function Layout({
             </a>
           </Link>
           {data?.ok ? (
-            <Link href={`/profile/${data?.profile.id}`}>
+            <Link href={`/profile/${data?.profile?.id}`}>
               <a
                 className={cls(
                   "flex flex-col items-center space-y-2 ",
