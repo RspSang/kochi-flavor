@@ -118,27 +118,31 @@ const RestaurantDetail: NextPage = () => {
   const [cleanCuisine, setCleanCuisine] = useState([] as string[]);
   const wantClick = () => {
     if (wantLoading) return;
-    want({});
-    mutate(
-      {
-        ...data,
-        want: !data?.want,
-        went: data?.went,
-      },
-      false
-    );
+    if (data) {
+      want({});
+      mutate(
+        {
+          ...data,
+          want: !data.want,
+          went: data.went,
+        },
+        false
+      );
+    }
   };
   const wentClick = () => {
     if (wentLoading) return;
-    went({});
-    mutate(
-      {
-        ...data,
-        want: data?.want,
-        went: !data?.went,
-      },
-      false
-    );
+    if (data) {
+      went({});
+      mutate(
+        {
+          ...data,
+          want: data.want,
+          went: !data.went,
+        },
+        false
+      );
+    }
   };
   const onValid = async ({ photo, review, rate }: ReviewForm) => {
     if (loading) return;

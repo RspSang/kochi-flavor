@@ -37,7 +37,9 @@ export default function Layout({
   };
   return (
     <div>
-      {searchBar ? <Search setSearchText={setSearchText} /> : null}
+      {searchBar && setSearchText ? (
+        <Search setSearchText={setSearchText} />
+      ) : null}
       {canGoBack ? (
         <div className="fixed top-0 flex h-12 items-center w-full max-w-xl justify-center z-40 border-b bg-white px-10 text-lg  font-medium text-gray-800">
           <button onClick={onClick} className="absolute left-4">
