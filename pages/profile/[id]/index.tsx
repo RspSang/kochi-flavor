@@ -107,7 +107,7 @@ const Profile: NextPage = () => {
                           </svg>
                         </div>
                         <span className="text-sm font-medium text-gray-700">
-                          レニューを見る
+                          レビューを見る
                         </span>
                       </div>
                       <div className="">
