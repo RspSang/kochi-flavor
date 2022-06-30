@@ -76,6 +76,8 @@ model Navi {
   longitude  Float?
   answers    Answer[]
   wonderings Wondering[]
+
+  @@index([userId])
 }
 
 model Answer {
@@ -87,6 +89,8 @@ model Answer {
   answer    String   @db.MediumText
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([userId, naviId])
 }
 
 model Wondering {
@@ -97,6 +101,8 @@ model Wondering {
   naviId    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([userId, naviId])
 }
 
 model Review {
@@ -112,6 +118,8 @@ model Review {
   updatedAt    DateTime   @updatedAt
   likes        Like[]
   comments     Comment[]
+
+  @@index([userId, restaurantId])
 }
 
 model Want {
@@ -122,6 +130,8 @@ model Want {
   restaurantId Int
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
+
+  @@index([userId, restaurantId])
 }
 
 model Went {
@@ -132,6 +142,8 @@ model Went {
   restaurantId Int
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
+
+  @@index([userId, restaurantId])
 }
 
 model Like {
@@ -142,6 +154,8 @@ model Like {
   reviewId  Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([userId, reviewId])
 }
 
 model Comment {
@@ -153,4 +167,6 @@ model Comment {
   comment   String   @db.MediumText
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([userId, reviewId])
 }
