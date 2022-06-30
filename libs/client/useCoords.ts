@@ -16,7 +16,7 @@ export default function useCoords() {
     setCoords({ latitude, longitude });
   };
   const onError = () =>
-    setCoords({ latitude: 33.5563016, longitude: 133.5260597 });
+    setCoords({ latitude: 33.5595257, longitude: 133.5310283 });
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(onSuccess, onError);
