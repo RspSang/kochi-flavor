@@ -8,6 +8,7 @@ import useMutation from "@libs/client/useMutation";
 import { useEffect } from "react";
 import Layout from "@components/layout";
 import Header from "@components/header";
+import Image from "next/image";
 
 interface SignInForm {
   email: string;
@@ -39,12 +40,15 @@ const SignIn: NextPage = () => {
   }, [data, router]);
   return (
     <>
-    <Header title="ログイン"/>
+      <Header title="ログイン" />
       <Layout hasTabBar>
         <div className="mt-16 px-4 max-w-xl">
           <h3 className="text-center text-3xl font-bold">
-            🍽️ Kochi Flavorへようこそ
+            Kochi Flavorへようこそ
           </h3>
+          <div className="absolute -z-20 top-4 left-1/2 -translate-x-1/2 opacity-60">
+            <Image src="/logo.jpg" width="150" height="150" />
+          </div>
           <div className="mt-12">
             <div>
               <h5 className="text-center font-medium text-gray-500">
