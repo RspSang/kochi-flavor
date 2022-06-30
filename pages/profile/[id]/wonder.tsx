@@ -6,6 +6,7 @@ import Loading from "@components/loading";
 import useUser from "@libs/client/useUser";
 import WonderingCard from "@components/wondering-card";
 import { NaviWithUser } from "pages/navi";
+import Header from "@components/header";
 
 interface WonderResponse {
   ok: boolean;
@@ -20,13 +21,16 @@ const Wonders: NextPage = () => {
   const { user } = useUser();
 
   return (
-    <Layout canGoBack backURL={`/profile/${user?.id}`} title="気になる">
-      {data?.ok ? (
-        data.navis?.map((navi) => <WonderingCard navi={navi} key={navi.id} />)
-      ) : (
-        <Loading />
-      )}
-    </Layout>
+    <>
+      <Header title="気になる" />
+      <Layout canGoBack backURL={`/profile/${user?.id}`} title="気になる">
+        {data?.ok ? (
+          data.navis?.map((navi) => <WonderingCard navi={navi} key={navi.id} />)
+        ) : (
+          <Loading />
+        )}
+      </Layout>
+    </>
   );
 };
 

@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import Input from "@components/input";
 import useUser from "@libs/client/useUser";
 import Image from "next/image";
+import Header from "@components/header";
 
 interface AnswerWithUser extends Answer {
   user: User;
@@ -120,6 +121,8 @@ const NaviDetail: NextPage = () => {
     }
   }, [answerDeleteData]);
   return (
+    <>
+    <Header title="まちナビ"/>
     <Layout canGoBack backURL="/navi">
       <div
         onClick={() => {
@@ -331,6 +334,7 @@ const NaviDetail: NextPage = () => {
         </div>
       </div>
     </Layout>
+    </>
   );
 };
 

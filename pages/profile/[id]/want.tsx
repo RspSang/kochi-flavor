@@ -7,6 +7,7 @@ import { RestaurantWithDistance } from "pages/list";
 import { useRouter } from "next/router";
 import RestaurantCard from "@components/restaurant-card";
 import Loading from "@components/loading";
+import Header from "@components/header";
 
 interface WantResponse {
   ok: boolean;
@@ -22,25 +23,28 @@ const Want: NextPage = () => {
       : null
   );
   return (
-    <Layout
-      canGoBack
-      backURL={`/profile/${router.query.id}`}
-      title="行きたい所"
-    >
-      <div className="mt-2">
-        {data ? (
-          data.restaurants?.map((restaurant) => (
-            <Link href={`/restaurants/${restaurant.id}`} key={restaurant.id}>
-              <a>
-                <RestaurantCard restaurant={restaurant} />
-              </a>
-            </Link>
-          ))
-        ) : (
-          <Loading />
-        )}
-      </div>
-    </Layout>
+    <>
+      <Header title="行きたい所" />
+      <Layout
+        canGoBack
+        backURL={`/profile/${router.query.id}`}
+        title="行きたい所"
+      >
+        <div className="mt-2">
+          {data ? (
+            data.restaurants?.map((restaurant) => (
+              <Link href={`/restaurants/${restaurant.id}`} key={restaurant.id}>
+                <a>
+                  <RestaurantCard restaurant={restaurant} />
+                </a>
+              </Link>
+            ))
+          ) : (
+            <Loading />
+          )}
+        </div>
+      </Layout>
+    </>
   );
 };
 

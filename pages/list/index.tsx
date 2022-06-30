@@ -7,6 +7,7 @@ import RestaurantCard from "@components/restaurant-card";
 import Loading from "@components/loading";
 import { useEffect, useState } from "react";
 import { useInfiniteScroll } from "@libs/client/useInfiniteScroll";
+import Header from "@components/header";
 
 export interface RestaurantWithDistance extends Restaurant {
   distance: number;
@@ -49,20 +50,23 @@ export default function List() {
   }, [searchText]);
 
   return (
-    <Layout searchBar hasTabBar setSearchText={setSearchText}>
-      <div className="mt-8">
-        {data ? (
-          restaurants?.map((restaurant) => (
-            <Link href={`restaurants/${restaurant.id}`} key={restaurant.id}>
-              <a>
-                <RestaurantCard restaurant={restaurant} />
-              </a>
-            </Link>
-          ))
-        ) : (
-          <Loading />
-        )}
-      </div>
-    </Layout>
+    <>
+    <Header title="リスト"/>
+      <Layout searchBar hasTabBar setSearchText={setSearchText}>
+        <div className="mt-8">
+          {data ? (
+            restaurants?.map((restaurant) => (
+              <Link href={`restaurants/${restaurant.id}`} key={restaurant.id}>
+                <a>
+                  <RestaurantCard restaurant={restaurant} />
+                </a>
+              </Link>
+            ))
+          ) : (
+            <Loading />
+          )}
+        </div>
+      </Layout>
+    </>
   );
 }

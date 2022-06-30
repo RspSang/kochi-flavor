@@ -9,6 +9,7 @@ import { Navi } from "@prisma/client";
 import useCoords from "@libs/client/useCoords";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
+import Header from "@components/header";
 
 interface WriteForm {
   question: string;
@@ -40,24 +41,27 @@ const Write: NextPage = () => {
   }, [data, router]);
 
   return (
-    <Layout canGoBack backURL="/navi" title="質問する">
-      <form className="space-y-4 p-4" onSubmit={handleSubmit(onValid)}>
-        <TextArea
-          register={register("question", {
-            required: "質問内容を入力してください",
-            minLength: { value: 5, message: "5文字以上入力してください" },
-          })}
-          placeholder="地域の皆さんに質問しよう!"
-          required
-        />
-        {errors ? (
-          <span className="block text-sm text-red-500">
-            {errors?.question?.message}
-          </span>
-        ) : null}
-        <Button text={loading ? "ローディング中" : "送信"} />
-      </form>
-    </Layout>
+    <>
+      <Header title="質問する" />
+      <Layout canGoBack backURL="/navi" title="質問する">
+        <form className="space-y-4 p-4" onSubmit={handleSubmit(onValid)}>
+          <TextArea
+            register={register("question", {
+              required: "質問内容を入力してください",
+              minLength: { value: 5, message: "5文字以上入力してください" },
+            })}
+            placeholder="地域の皆さんに質問しよう!"
+            required
+          />
+          {errors ? (
+            <span className="block text-sm text-red-500">
+              {errors?.question?.message}
+            </span>
+          ) : null}
+          <Button text={loading ? "ローディング中" : "送信"} />
+        </form>
+      </Layout>
+    </>
   );
 };
 

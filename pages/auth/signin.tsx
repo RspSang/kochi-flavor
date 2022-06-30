@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import useMutation from "@libs/client/useMutation";
 import { useEffect } from "react";
 import Layout from "@components/layout";
+import Header from "@components/header";
 
 interface SignInForm {
   email: string;
@@ -37,54 +38,58 @@ const SignIn: NextPage = () => {
     }
   }, [data, router]);
   return (
-    <Layout hasTabBar>
-      <div className="mt-16 px-4 max-w-xl">
-        <h3 className="text-center text-3xl font-bold">
-          🍽️ 高知プレートへようこそ
-        </h3>
-        <div className="mt-12">
-          <div>
-            <h5 className="text-center font-medium text-gray-500">
-              ログインする方法を選んでください
-            </h5>
-            <div className="mt-8 grid w-full grid-cols-2 border-b"></div>
-          </div>
-          {errors.email || errors.password || data?.error ? (
-            <div className="bg-red-200 rounded-lg px-4 py-4 top-4 relative">
-              <span className="block text-sm text-red-500">
-                {errors.email?.message}
-              </span>
-              <span className="block text-sm text-red-500">
-                {errors.password?.message}
-              </span>
-              <span className="block text-sm text-red-500">{data?.error}</span>
+    <>
+    <Header title="ログイン"/>
+      <Layout hasTabBar>
+        <div className="mt-16 px-4 max-w-xl">
+          <h3 className="text-center text-3xl font-bold">
+            🍽️ Kochi Flavorへようこそ
+          </h3>
+          <div className="mt-12">
+            <div>
+              <h5 className="text-center font-medium text-gray-500">
+                ログインする方法を選んでください
+              </h5>
+              <div className="mt-8 grid w-full grid-cols-2 border-b"></div>
             </div>
-          ) : null}
-          <form
-            onSubmit={handleSubmit(onValid)}
-            className="mt-8 flex flex-col space-y-4"
-          >
-            <Input
-              register={register("email", {
-                required: "メールアドレスを入力してください",
-              })}
-              name="email"
-              label="メールアドレス"
-              type="email"
-            />
+            {errors.email || errors.password || data?.error ? (
+              <div className="bg-red-200 rounded-lg px-4 py-4 top-4 relative">
+                <span className="block text-sm text-red-500">
+                  {errors.email?.message}
+                </span>
+                <span className="block text-sm text-red-500">
+                  {errors.password?.message}
+                </span>
+                <span className="block text-sm text-red-500">
+                  {data?.error}
+                </span>
+              </div>
+            ) : null}
+            <form
+              onSubmit={handleSubmit(onValid)}
+              className="mt-8 flex flex-col space-y-4"
+            >
+              <Input
+                register={register("email", {
+                  required: "メールアドレスを入力してください",
+                })}
+                name="email"
+                label="メールアドレス"
+                type="email"
+              />
 
-            <Input
-              register={register("password", {
-                required: "パスワードを入力してください",
-              })}
-              name="password"
-              label="パスワード"
-              type="password"
-            />
-            <Button text={loading ? "読み込み中" : "ログイン"} />
-          </form>
-          <div className="mt-8">
-            {/* <div className="relative">
+              <Input
+                register={register("password", {
+                  required: "パスワードを入力してください",
+                })}
+                name="password"
+                label="パスワード"
+                type="password"
+              />
+              <Button text={loading ? "読み込み中" : "ログイン"} />
+            </form>
+            <div className="mt-8">
+              {/* <div className="relative">
               <div className="absolute w-full border-t border-gray-300" />
               <div className="relative -top-3 text-center">
                 <span className="bg-white px-2 text-sm text-gray-500">
@@ -135,16 +140,17 @@ const SignIn: NextPage = () => {
                 </svg>
               </button>
             </div> */}
-            <h5 className="text-center mt-7 font-medium text-gray-500">
-              <span>アカウントをお持ちでないしょうか？</span>
-              <Link href="/auth/signup">
-                <a className="text-blue-500">会員登録&rarr;</a>
-              </Link>
-            </h5>
+              <h5 className="text-center mt-7 font-medium text-gray-500">
+                <span>アカウントをお持ちでないしょうか？</span>
+                <Link href="/auth/signup">
+                  <a className="text-blue-500">会員登録&rarr;</a>
+                </Link>
+              </h5>
+            </div>
           </div>
         </div>
-      </div>
-    </Layout>
+      </Layout>
+    </>
   );
 };
 

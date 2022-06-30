@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import useMutation from "@libs/client/useMutation";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import Header from "@components/header";
 
 interface EditProfileForm {
   avatar?: FileList;
@@ -100,64 +101,67 @@ const EditProfile: NextPage = () => {
     }
   }, [router, user]);
   return (
-    <Layout
-      canGoBack
-      backURL={`/profile/${user?.id}`}
-      title="プロフィールの編集"
-    >
-      <form
-        onSubmit={handleSubmit(onValid)}
-        className="space-y-4 py-5 px-4 max-w-xl"
+    <>
+    <Header title="プロフィールの編集"/>
+      <Layout
+        canGoBack
+        backURL={`/profile/${user?.id}`}
+        title="プロフィールの編集"
       >
-        <div className="flex items-center space-x-3">
-          {avatarPreview ? (
-            <Image
-              height={64}
-              width={64}
-              src={avatarPreview}
-              className="rounded-full bg-slate-500"
-            />
-          ) : (
-            <div className="h-16 w-16 rounded-full bg-slate-500" />
-          )}
-          <label
-            htmlFor="picture"
-            className="cursor-pointer rounded-md border border-gray-300 py-2 px-3 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
-          >
-            写真を選ぶ
-            <input
-              {...register("avatar")}
-              id="picture"
-              type="file"
-              className="hidden"
-              accept="image/*"
-            />
-          </label>
-        </div>
-        {errors?.formErrors?.message ? (
-          <div className="bg-red-200 rounded-lg px-4 py-4">
-            <span className="block text-sm text-red-500">
-              {errors.formErrors.message}
-            </span>
+        <form
+          onSubmit={handleSubmit(onValid)}
+          className="space-y-4 py-5 px-4 max-w-xl"
+        >
+          <div className="flex items-center space-x-3">
+            {avatarPreview ? (
+              <Image
+                height={64}
+                width={64}
+                src={avatarPreview}
+                className="rounded-full bg-slate-500"
+              />
+            ) : (
+              <div className="h-16 w-16 rounded-full bg-slate-500" />
+            )}
+            <label
+              htmlFor="picture"
+              className="cursor-pointer rounded-md border border-gray-300 py-2 px-3 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+            >
+              写真を選ぶ
+              <input
+                {...register("avatar")}
+                id="picture"
+                type="file"
+                className="hidden"
+                accept="image/*"
+              />
+            </label>
           </div>
-        ) : null}
-        <Input
-          register={register("name")}
-          required={false}
-          label="ニックネーム"
-          name="name"
-          type="text"
-        />
-        <Input
-          register={register("userDescription")}
-          required={false}
-          label="自己紹介"
-          name="userDescription"
-          type="text"
-        />
-        <Button text={"更新"} />
-      </form>
-    </Layout>
+          {errors?.formErrors?.message ? (
+            <div className="bg-red-200 rounded-lg px-4 py-4">
+              <span className="block text-sm text-red-500">
+                {errors.formErrors.message}
+              </span>
+            </div>
+          ) : null}
+          <Input
+            register={register("name")}
+            required={false}
+            label="ニックネーム"
+            name="name"
+            type="text"
+          />
+          <Input
+            register={register("userDescription")}
+            required={false}
+            label="自己紹介"
+            name="userDescription"
+            type="text"
+          />
+          <Button text={"更新"} />
+        </form>
+      </Layout>
+    </>
   );
 };
 
