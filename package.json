@@ -41,6 +41,6 @@
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
   "resolutions": {
-    "@types/react": "~17.0.47"
+    "@types/react": "~16.8.0"
   }
 }
