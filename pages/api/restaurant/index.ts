@@ -16,12 +16,12 @@ async function handler(
   const restaurants = await client.restaurant.findMany({
     where: {
       latitude: {
-        gte: parsedLatitude - 0.01,
-        lte: parsedLatitude + 0.01,
+        gte: parsedLatitude - 0.008,
+        lte: parsedLatitude + 0.008,
       },
       longitude: {
-        gte: parsedLongitude - 0.01,
-        lte: parsedLongitude + 0.01,
+        gte: parsedLongitude - 0.008,
+        lte: parsedLongitude + 0.008,
       },
     },
   });

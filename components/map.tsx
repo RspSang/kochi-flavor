@@ -1,5 +1,10 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
+import {
+  GoogleMap,
+  LoadScript,
+  Marker,
+  OverlayView,
+} from "@react-google-maps/api";
 import useCoords from "@libs/client/useCoords";
 import mapStyles from "@libs/client/mapStyles";
 import useSWR from "swr";
@@ -23,6 +28,11 @@ export interface RestaurantResponse {
   restaurants: Restaurant[];
 }
 
+const getPixelPositionOffset = (width: number, height: number) => ({
+  x: -(width / 2),
+  y: -(height / 2),
+});
+
 const Map = () => {
   const { latitude, longitude } = useCoords();
   const center = useMemo(
@@ -31,11 +41,11 @@ const Map = () => {
   );
   const [isMove, setIsMove] = useState(false);
   const [mapref, setMapRef] = useState(null);
+  const [showCard, setShowCard] = useState(0);
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const handleOnLoad = (map: any) => {
     setMapRef(map);
   };
-
   const { data } = useSWR<RestaurantResponse>(
     latitude && longitude
       ? `/api/restaurant?latitude=${latitude}&longitude=${longitude}`
@@ -44,6 +54,10 @@ const Map = () => {
 
   const onDragEnd = () => {
     setIsMove(true);
+  };
+
+  const onMarkerClick = (id: number) => {
+    setShowCard(id);
   };
 
   useEffect(() => {
@@ -71,7 +85,24 @@ const Map = () => {
           />
           {data?.ok
             ? restaurants.map((restaurant) => (
-                <InfoMarker data={restaurant} key={restaurant.id} />
+                <div key={restaurant.id}>
+                  <OverlayView
+                    position={{
+                      lat: +restaurant.latitude!,
+                      lng: +restaurant.longitude!,
+                    }}
+                    mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+                    getPixelPositionOffset={getPixelPositionOffset}
+                  >
+                    <div
+                      className="h-5 w-5 bg-orange-500 rounded-full border-2 border-white hover:cursor-pointer z-10"
+                      onClick={() => onMarkerClick(restaurant.id)}
+                    />
+                  </OverlayView>
+                  {showCard === restaurant.id ? (
+                    <InfoMarker data={restaurant} key={restaurant.id} />
+                  ) : null}
+                </div>
               ))
             : null}
           <Marker
