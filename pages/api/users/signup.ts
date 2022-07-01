@@ -47,9 +47,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       const sendEmail = await mail.send({
         from: "akwek33@naver.com",
         to: email,
-        subject: "高知プレートの認証コード",
-        text: `お客様の高知プレート認証コード:${payload}`,
-        html: `<strong>お客様の高知プレート認証コード:${payload}</strong>`,
+        subject: "Kochi Flavorの認証コード",
+        text: `お客様のKochi Flavor認証コード:${payload}`,
+        html: `<strong>お客様のKochi Flavor認証コード:${payload}</strong>`,
       });
 
       res.json({ ok: true });

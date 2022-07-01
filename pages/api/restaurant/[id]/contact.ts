@@ -16,7 +16,7 @@ async function handler(
   const sendEmail = await mail.send({
     from: "akwek33@naver.com",
     to: "akwek33@naver.com",
-    subject: `高知プレートレストラン情報[${name}]`,
+    subject: `Kochi Flavor レストラン情報[${name}]`,
     html: `<h1>お店:${name}</h1><h1>住所:${address}</h1><h1>開店時間:${openTime}</h1><h1>閉店時間:${closeTime}</h1><h1>定休日:${closed}</h1><h1>駐車場:${parking}</h1><h1>種類:${cuisine}</h1><h1>その他:${ect}</h1><h1>UserId:${user?.id}</h1>`,
   });
   res.json({ ok: true });
