@@ -9,7 +9,7 @@ declare module "iron-session" {
 }
 
 const cookieOptions = {
-  cookieName: "kochi-plate",
+  cookieName: "kochiFlavorSession",
   password: process.env.COOKIE_PW!,
 };
 
