@@ -24,7 +24,6 @@ interface NaviResponse {
 
 const NaviIndex: NextPage = () => {
   const { data } = useSWR<NaviResponse>(`/api/navi`);
-  console.log(data);
 
   return (
     <>
